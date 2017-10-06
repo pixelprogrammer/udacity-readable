@@ -1,0 +1,276 @@
+html {
+	box-sizing: border-box;
+}
+
+*, *::before, *::after {
+    box-sizing: inherit;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	font-family: sans-serif;
+}
+
+.clearfix:before,
+.clearfix:after {
+	content: "";
+	display: table;
+} 
+.clearfix:after {
+	clear: both;
+}
+.clearfix {
+	zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+}
+
+.error, .danger {
+	color: #da2424;
+}
+.container {
+	max-width: 960px;
+	margin-left: auto;
+	margin-right: auto;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+.header {
+	background: rgba(255,255,255,0.4);
+	border-bottom: 1px solid #efefef;
+}
+.title {
+	text-align: center;
+}
+.button {
+	padding: 10px 20px;
+	background: #fafafa;
+	/*border-radius: 4px;*/
+	border: 1px solid #efefef;
+	color: #555;
+	margin-left: 6px;
+	margin-right: 6px;
+	text-decoration: none;
+}
+
+.button-icon {
+	cursor: pointer;
+	background: transparent;
+	border: 0;
+	color: #333;
+	font-size: 1.2em;
+	padding: 0;
+	width: 50px;
+	height: 50px;
+	line-height: 50px;
+	text-align: center;
+	display: inline-block;
+}
+
+.button-icon > .clickable {
+	padding-left: 16px;
+	padding-right: 16px;
+	display: inline-block;
+	
+}
+
+.button-icon > a {
+	color: #333;
+}
+
+.button-icon:hover {
+	background: #efefef;
+}
+.button:hover {
+	cursor: pointer;
+}
+.button-primary {
+	background: #355cea;
+	color: white;
+	border-color: #213b9a;
+}
+.button-primary:hover {
+	background: #4a70f7;
+}
+.button-danger {
+	background: red;
+	color: white;
+	border-color: darkred;
+}
+
+.company-title {
+	display: flex;
+	align-items: center;
+	width: 30%;
+	float: left;
+	height: 40px;
+}
+
+.nav-right {
+	float: right;
+}
+
+.main-nav {
+	height: 40px;
+	display: flex;
+	align-items: center;
+	list-style: none;
+}
+.main-nav li {
+	margin: 0 10px;
+}
+
+.actions-bar {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	border-top: 1px solid #efefef;
+}
+
+.actions-bar .action-item {
+	height: 50px;
+	display: block;
+	padding: 10px;
+	line-height: 30px;
+	float:right;
+	border: 0;
+	border-left: 1px solid #efefef;
+	background: #fefefe;
+	font-size: 1.1em;
+}
+
+.actions-bar .action-item:hover {
+	background: #d4efff;
+	cursor: pointer;
+}
+.modal {
+	position: fixed;
+	top: 50%;
+	left: 200px;
+	right: 200px;
+	/*bottom: 40px;*/
+	transform: translateY(-50%);
+	border: 1px solid rgb(204, 204, 204);
+	background: rgb(255, 255, 255);
+	border-radius: 4px;
+	outline: none;
+	overflow: hidden;
+	box-shadow: 0 3px 8px 0 rgba(0,0,0,.24), 0 3px 12px 0 rgba(0,0,0,.12);
+	min-width: 500px;
+	padding-bottom: 50px;
+	padding-top: 50px;
+	max-height: 100%;
+}
+.modal-header {
+	border-bottom: 1px solid #efefef;
+	font-weight: bold;
+	font-size: 1.2em;
+	margin: 0;
+	padding: 20px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	background: white;
+}
+.modal-footer {
+	text-align:right;
+	/*height: 50px;*/
+	border-top: 1px solid #efefef;
+	padding: 10px 20px;
+	line-height: 30px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: white;
+}
+
+.modal-body {
+	padding: 20px;
+	overflow: auto;
+	min-height: 150px;
+}
+.overlay {
+	background: rgba(255,255,255,0.8);
+	position: fixed;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+.form-group {
+	margin: 20px 0;
+}
+
+input,
+textarea,
+select {
+	border-radius: 4px;
+	border: 1px solid #efefef;
+	padding: 10px 20px;
+}
+
+select {
+	background: transparent;
+}
+.input-full {
+	width: 100%;
+}
+
+.post-list {
+	list-style: none;
+	padding:0;
+	margin: 20px 0;
+}
+
+.post-item {
+	padding-left: 70px;
+	padding-right: 35px;
+	position: relative;
+}
+
+.post-box {
+	display: block;
+	border: 1px solid #efefef;
+	padding: 20px;
+	margin-top: 30px;
+	margin-bottom: 30px;
+	padding-bottom: 70px;
+	position: relative;	
+}
+.post-box-sidebar {
+	text-align: center;
+	position: absolute;
+	/*display: flex;*/
+	/*align-items: center;*/
+	/*justify-content: center;*/
+	top: 0;
+	left: 20px;
+	width: 50px;
+}
+.post-box-sidebar .button-icon > .clickable {
+	width: 100%;
+	padding: 0;
+	font-size: 1.2em;
+}
+.post-title {
+	margin-top: 0;
+}
+.post-options {
+	display: flex;
+	border-top: 1px solid #efefef;
+	height: 50px;
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+}
+
+.positive {
+	color: green;
+}
+
+.negative {
+	color: red;
+}

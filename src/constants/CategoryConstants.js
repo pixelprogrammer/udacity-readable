@@ -1,0 +1,2 @@
+export const QUERY_CATEGORIES = 'QUERY_CATEGORIES';
+
