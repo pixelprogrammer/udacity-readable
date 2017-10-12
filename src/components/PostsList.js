@@ -9,7 +9,7 @@ import {Link} from 'react-router-dom';
 import VoteScore from './PostScore';
 import uuid from 'uuid/v4';
 
-export default function PostsList({posts, onDelete}) {
+export default function PostsList({posts, onDelete, onVoteHandler}) {
 	if(posts.length === 0 ) {
 		return <p className="message notification">No Posts were added yet. What are you waiting for.....go add some.</p>
 	}
@@ -35,11 +35,11 @@ export default function PostsList({posts, onDelete}) {
 						</div>
 					</div>
 					<div className="post-box-sidebar">
-						<button className="button-icon">
+						<button className="button-icon" onClick={onVoteHandler('upvote', post.id)}>
 								<FaArrowUp />
 						</button>
 						<VoteScore voteScore={post.voteScore} />
-						<button className="button-icon">
+						<button className="button-icon" onClick={onVoteHandler('downvote', post.id)}>
 								<FaArrowDown />
 						</button>
 					</div>

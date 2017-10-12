@@ -3,6 +3,8 @@ import {
 	DELETE_POST,
 	EDIT_POST,
 	QUERY_POSTS,
+	UPVOTE_POST,
+	DOWNVOTE_POST,
 } from '../constants/PostConstants'
 
 function posts (state = [], action) {
@@ -32,7 +34,29 @@ function posts (state = [], action) {
 			
 			return newState;
 		case QUERY_POSTS:
-			return action.posts;
+
+			return action.posts.filter((post) => !post.deleted );
+		case UPVOTE_POST:
+			newState = state.map((post) => {
+				if( action.id == post.id ) {
+					console.log('voted post up: ' + post.title);
+					post.voteScore++;
+				}
+
+				return post;
+			});
+			return newState;
+		case DOWNVOTE_POST:
+			newState = state.map((post) => {
+				if( action.id == post.id ) {
+					post.voteScore--;
+				}
+
+				return post;
+			});
+
+			console.log(newState);
+			return newState;
 		default:
 			return state;
 	}

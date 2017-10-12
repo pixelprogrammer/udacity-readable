@@ -4,12 +4,12 @@ import {Route, Link} from 'react-router-dom';
 import logo from '../logo.svg';
 import '../App.css';
 import PostsList from './PostsList';
-import {addPostAction, editPostAction, deletePostAction, queryPostsAction} from '../actions/posts';
+import {addPostAction, editPostAction, deletePostAction, queryPostsAction, upvotePostAction, downvotePostAction} from '../actions/posts';
 import {queryCategories} from '../actions/categories';
 import FaPlus from 'react-icons/lib/fa/plus';
 import Modal from 'react-modal'
 import uuid from 'uuid/v4'
-import {getPosts, getCategories, addPost} from '../utils/blogAPI'
+import {getPosts, getCategories, addPost, deletePost, upvotePost, downvotePost} from '../utils/blogAPI'
 
 class App extends Component {
 
@@ -65,7 +65,9 @@ class App extends Component {
 		// console.log(form);
 		// var formData = new FormData(form);
 		console.log(formData);
-
+		const {addPostAction} = this.props;
+		const closePostEditModal = this.closePostEditModal;
+		
 		const query = addPost(formData);
 		query.then(function(res) {
 			if( res.ok ) {
@@ -77,17 +79,39 @@ class App extends Component {
 			console.error("Ok post was not added");
 		}).then(function(data) {
 			console.log(data);
-			// this.props.addPostAction(data);
+			const post = {
+				...formData,
+				...data,
+			}
+			addPostAction(post);
+			closePostEditModal();
 		}).catch(function(err) {
 			console.error(err);
 		});
 	}
 
-	deletePost = (id) => {
-		// open modal with two options
-		// if option cancel close modal
-		// if option ok delete post and close modal
+	onDeletePost = () => {
+		const {deletePostAction} = this.props;
+		const closeDeleteModal = this.closeDeleteModal;
+		const postId = this.state.deletePostId;
+
+		const req = deletePost(postId);
+		req.then(function(res) {
+			if(res.ok) {
+				return res.json();
+			}
+
+			console.error('Error deleting post');
+		}).then(function(data) {
+			console.log(data);
+			closeDeleteModal();
+			deletePostAction(postId);
+		}).catch(function(err) {
+			console.error(err);
+		});
+
 	}
+
 	getAllPosts = () => {
 		const {queryPostsAction} = this.props;
 
@@ -124,6 +148,43 @@ class App extends Component {
 			console.error(err);
 		})
 	}
+
+	onVoteHandler = (voteType, id) => {
+		let msg = "Post has been downvoted";
+		if(voteType === 'upvote') {
+			msg = "Post has been upvoted"
+		}
+
+		const {upvotePostAction, downvotePostAction} = this.props
+
+		return function() {
+			var query;
+
+			if( voteType === "upvote" ) {
+				query = upvotePost(id);
+			} else {
+				query = downvotePost(id);
+			}
+
+			query.then(function(res) {
+				if( res.ok ) {
+					return res.json();
+				}
+
+				console.error("Unable to " + voteType + " Post with ID: " + id);
+			}).then(function(data) {
+				console.log(data);
+				if( voteType === 'upvote' ) {
+					upvotePostAction(id);
+				} else {
+					downvotePostAction(id);
+				}
+			}).catch(function(err) {
+				console.error(err);
+			});
+		}
+	}
+
 	render() {
 		let postToBeDeleted = ""
 		if( this.state.deletePostId ) {
@@ -155,7 +216,7 @@ class App extends Component {
 					<div className="main-page">
 						<div className="container">
 							<h2 className="title">The Main page</h2>
-							<PostsList posts={this.props.posts} onDelete={this.openDeleteModal} />
+							<PostsList posts={this.props.posts} onDelete={this.openDeleteModal} onVoteHandler={this.onVoteHandler} />
 						</div>
 					</div>
 				)}/>
@@ -206,7 +267,7 @@ class App extends Component {
 					<h2 className="modal-header">Delete Post</h2>
 					<div className="modal-body">Are you sure you want to delete this post? <strong>{postToBeDeleted}</strong></div>
 					<div className="modal-footer">
-						<button className="button button-danger" onClick={this.deletePost}>Delete Post</button>
+						<button className="button button-danger" onClick={this.onDeletePost}>Delete Post</button>
 						<button className="button" onClick={this.closeDeleteModal}>Cancel</button>
 					</div>
 				</Modal>
@@ -234,6 +295,8 @@ function mapDispatchToProps (dispatch) {
 		editPostAction: (data) => dispatch(editPostAction(data)),
 		deletePostAction: (data) => dispatch(deletePostAction(data)),
 		queryPostsAction: (data) => dispatch(queryPostsAction(data)),
+		upvotePostAction: (data) => dispatch(upvotePostAction(data)),
+		downvotePostAction: (data) => dispatch(downvotePostAction(data)),
 		queryCategories: (data) => dispatch(queryCategories(data))
 	}
 }

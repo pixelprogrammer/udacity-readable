@@ -31,12 +31,28 @@ export function addPost(data) {
 
 export function deletePost(id) {
 	console.log('deleting post');
+	return apiFetch(API_URL + '/posts/' + id, {
+		method: "DELETE"
+	});
 }
 
 export function updatePost(data) {
 	console.log('updating post');
 }
 
+export function upvotePost(id) {
+	return apiFetch(API_URL + '/posts/' + id, {
+		method: "POST",
+		body: JSON.stringify({option: 'upVote'})
+	});
+}
+
+export function downvotePost(id) {
+	return apiFetch(API_URL + '/posts/' + id, {
+		method: "POST",
+		body: JSON.stringify({option: 'downVote'})
+	});
+}
 export function getCategories() {
 	return apiFetch(API_URL + '/categories');
 }
