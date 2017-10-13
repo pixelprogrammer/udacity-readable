@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import {Route, Link} from 'react-router-dom';
+import {Route, Link, Switch, withRouter} from 'react-router-dom';
 import logo from '../logo.svg';
 import '../App.css';
 import PostsList from './PostsList';
@@ -10,6 +10,7 @@ import FaPlus from 'react-icons/lib/fa/plus';
 import Modal from 'react-modal'
 import uuid from 'uuid/v4'
 import {getPosts, getCategories, addPost, deletePost, upvotePost, downvotePost} from '../utils/blogAPI'
+import PostDetails from './PostDetails'
 
 class App extends Component {
 
@@ -64,20 +65,10 @@ class App extends Component {
 		// var form = document.getElementById('add-post-form');
 		// console.log(form);
 		// var formData = new FormData(form);
-		console.log(formData);
 		const {addPostAction} = this.props;
 		const closePostEditModal = this.closePostEditModal;
-		
-		const query = addPost(formData);
-		query.then(function(res) {
-			if( res.ok ) {
-				console.log('post added');
-				return res.json();
-			}
 
-			console.log(res);
-			console.error("Ok post was not added");
-		}).then(function(data) {
+		addPost(formData, function(data) {
 			console.log(data);
 			const post = {
 				...formData,
@@ -85,7 +76,7 @@ class App extends Component {
 			}
 			addPostAction(post);
 			closePostEditModal();
-		}).catch(function(err) {
+		}, function(err) {
 			console.error(err);
 		});
 	}
@@ -95,18 +86,11 @@ class App extends Component {
 		const closeDeleteModal = this.closeDeleteModal;
 		const postId = this.state.deletePostId;
 
-		const req = deletePost(postId);
-		req.then(function(res) {
-			if(res.ok) {
-				return res.json();
-			}
-
-			console.error('Error deleting post');
-		}).then(function(data) {
+		const req = deletePost(postId, function(data) {
 			console.log(data);
 			closeDeleteModal();
 			deletePostAction(postId);
-		}).catch(function(err) {
+		}, function(err) {
 			console.error(err);
 		});
 
@@ -115,38 +99,34 @@ class App extends Component {
 	getAllPosts = () => {
 		const {queryPostsAction} = this.props;
 
-		const query = getPosts();
-		query.then(function(res) {
-			if(res.ok) {
-				return res.json();
-			}
-
-			console.error('Could not retrieve the posts');
-		}).then(function(data) {
+		getPosts(function(data) {
 			queryPostsAction({posts:data});
-
-		}).catch(function(err) {
-			console.log('There was an error');
+		}, function(err) {
 			console.error(err);
 		});
+		
 	}
 
 
 	getAllCategories = () => {
 		const {queryCategories} = this.props;
 
-		const query = getCategories();
-		query.then(function(res) {
-			if(res.ok) {
-				return res.json();
-			}
-
-			console.error('Unable to retrieve categories');
-		}).then(function(data) {
+		getCategories(function(data) {
 			queryCategories(data);
-		}).catch(function(err) {
+		}, function(err) {
 			console.error(err);
-		})
+		});
+		// query.then(function(res) {
+		// 	if(res.ok) {
+		// 		return res.json();
+		// 	}
+
+		// 	console.error('Unable to retrieve categories');
+		// }).then(function(data) {
+		// 	queryCategories(data);
+		// }).catch(function(err) {
+		// 	console.error(err);
+		// })
 	}
 
 	onVoteHandler = (voteType, id) => {
@@ -158,30 +138,42 @@ class App extends Component {
 		const {upvotePostAction, downvotePostAction} = this.props
 
 		return function() {
-			var query;
 
-			if( voteType === "upvote" ) {
-				query = upvotePost(id);
-			} else {
-				query = downvotePost(id);
-			}
-
-			query.then(function(res) {
-				if( res.ok ) {
-					return res.json();
-				}
-
-				console.error("Unable to " + voteType + " Post with ID: " + id);
-			}).then(function(data) {
+			const onComplete = function(data) {
 				console.log(data);
 				if( voteType === 'upvote' ) {
 					upvotePostAction(id);
 				} else {
 					downvotePostAction(id);
 				}
-			}).catch(function(err) {
+			}
+
+			const onError = function(err) {
 				console.error(err);
-			});
+			}
+
+			if( voteType === "upvote" ) {
+				upvotePost(id, onComplete, onError);
+			} else {
+				downvotePost(id, onComplete, onError);
+			}
+
+			// query.then(function(res) {
+			// 	if( res.ok ) {
+			// 		return res.json();
+			// 	}
+
+			// 	console.error("Unable to " + voteType + " Post with ID: " + id);
+			// }).then(function(data) {
+			// 	console.log(data);
+			// 	if( voteType === 'upvote' ) {
+			// 		upvotePostAction(id);
+			// 	} else {
+			// 		downvotePostAction(id);
+			// 	}
+			// }).catch(function(err) {
+			// 	console.error(err);
+			// });
 		}
 	}
 
@@ -208,18 +200,26 @@ class App extends Component {
 					</nav>
 
 				</div>
-
-				<Route path="/:category/:post_id" render={() => (
-					<div className="post-details">Hello</div>
-				)}/>
-				<Route path="/" exact render={() => (
-					<div className="main-page">
-						<div className="container">
-							<h2 className="title">The Main page</h2>
-							<PostsList posts={this.props.posts} onDelete={this.openDeleteModal} onVoteHandler={this.onVoteHandler} />
+					<Route path="/" exact render={() => (
+						<div className="main-page">
+							<div className="container">
+								<h2 className="title">The Main page</h2>
+								<PostsList posts={this.props.posts} onDelete={this.openDeleteModal} onVoteHandler={this.onVoteHandler} />
+							</div>
 						</div>
-					</div>
-				)}/>
+					)}/>
+					<Route 
+						path="/categories"
+						exact
+						render={(props) => (
+							<div className="category-page">
+								<h2 className="title">The category Page</h2>
+							</div>
+						)}
+					/>
+					<Route exact path="/:category/:post_id" render={(props) => (
+						<PostDetails {...props} />
+					)}/>
 
 				<Modal
 					className='modal'
@@ -301,7 +301,7 @@ function mapDispatchToProps (dispatch) {
 	}
 }
 
-export default connect(
+export default withRouter(connect(
 	mapStateToProps,
 	mapDispatchToProps
-)(App)
+)(App))
