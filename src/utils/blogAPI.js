@@ -17,6 +17,19 @@ function apiFetch(url, options={}) {
 	return fetch(url, options);
 }
 
+export function getPost(id, onComplete, onError) {
+	apiFetch(API_URL + '/posts/' + id)
+	.then(function(res) {
+		if( res.ok ) {
+			return res.json();
+		}
+
+		console.error('Error could not get post details for id' + id);
+	})
+	.then(onComplete)
+	.catch(onError)
+}
+
 export function getPosts(onComplete, onError) {
 	apiFetch(API_URL + '/posts')
 	.then(function(res) {
@@ -30,7 +43,6 @@ export function getPosts(onComplete, onError) {
 }
 
 export function addPost(data, onComplete, onError) {
-	console.log("adding post");
 	apiFetch('http://localhost:3001/posts', {
 		method: 'POST',
 		body: JSON.stringify(data)
@@ -102,4 +114,81 @@ export function getCategories(onComplete, onError) {
 	})
 	.then(onComplete)
 	.catch(onError);
+}
+
+export function getComments(postId, onComplete, onError) {
+	return apiFetch(API_URL + '/posts/' + postId + '/comments')
+	.then(function(res) {
+		if(res.ok) {
+			return res.json();
+		}
+		console.error('Error retrieving comments');
+	})
+	.then(onComplete)
+	.catch(onError);
+}
+
+export function deleteComment(id, onComplete, onError) {
+	apiFetch(API_URL + '/comments/' + id, {
+		method: 'delete'
+	})
+	.then(function(res) {
+		if(res.ok) {
+			return res.json();
+		}
+
+		console.error("Error with request: Deleting comment " + id)
+	})
+	.then(onComplete)
+	.catch(onError)
+}
+export function addComment(comment, onComplete, onError) {
+
+	// id is default so set a default value if one is not set
+	if( typeof comment.id === 'undefined' || comment.id === '' ) {
+		comment.id = uuid();
+	}
+
+	apiFetch(API_URL + '/comments', {
+		method: 'post',
+		body: JSON.stringify(comment)
+	})
+	.then(function(res) {
+		if(res.ok) {
+			return res.json();
+		}
+
+		console.error("Error adding a comment");
+	})
+	.then(onComplete)
+	.catch(onError)
+}
+
+export function upvoteComment(id, onComplete, onError) {
+	apiFetch(API_URL + '/comments/' + id, {
+		method: "POST",
+		body: JSON.stringify({option: 'upVote'})
+	})
+	.then(function(res) {
+		if(res.ok) {
+			return res.json();
+		}
+		console.error('Error upvoting comment with id: ' + id);
+	})
+	.then(onComplete)
+	.catch(onError)
+}
+
+export function downvoteComment(id, onComplete, onError) {
+	return apiFetch(API_URL + '/comments/' + id, {
+		method: "POST",
+		body: JSON.stringify({option: 'downVote'})
+	}).then(function(res) {
+		if(res.ok) {
+			return res.json();
+		}
+		console.error('Error deleting comment with id: ' + id);
+	})
+	.then(onComplete)
+	.catch(onError)
 }

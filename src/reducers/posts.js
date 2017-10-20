@@ -38,7 +38,7 @@ function posts (state = [], action) {
 			return action.posts.filter((post) => !post.deleted );
 		case UPVOTE_POST:
 			newState = state.map((post) => {
-				if( action.id == post.id ) {
+				if( action.id === post.id ) {
 					console.log('voted post up: ' + post.title);
 					post.voteScore++;
 				}
@@ -48,14 +48,13 @@ function posts (state = [], action) {
 			return newState;
 		case DOWNVOTE_POST:
 			newState = state.map((post) => {
-				if( action.id == post.id ) {
+				if( action.id === post.id ) {
 					post.voteScore--;
 				}
 
 				return post;
 			});
 
-			console.log(newState);
 			return newState;
 		default:
 			return state;

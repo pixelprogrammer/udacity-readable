@@ -6,11 +6,13 @@ import '../App.css';
 import PostsList from './PostsList';
 import {addPostAction, editPostAction, deletePostAction, queryPostsAction, upvotePostAction, downvotePostAction} from '../actions/posts';
 import {queryCategories} from '../actions/categories';
+import {addCommentAction, addCommentsAction, upvoteCommentAction, downvoteCommentAction, deleteCommentAction} from '../actions/comments';
 import FaPlus from 'react-icons/lib/fa/plus';
 import Modal from 'react-modal'
 import uuid from 'uuid/v4'
-import {getPosts, getCategories, addPost, deletePost, upvotePost, downvotePost} from '../utils/blogAPI'
+import {getPosts, getCategories, addPost, deletePost, upvotePost, downvotePost, addComment, upvoteComment, downvoteComment, getComments, deleteComment} from '../utils/blogAPI'
 import PostDetails from './PostDetails'
+import CategoryList from './CategoryList'
 
 class App extends Component {
 
@@ -20,6 +22,8 @@ class App extends Component {
 		deletePostId: null,
 		editPostId: 0,
 		addPostId: "",
+		loadedPosts: false,
+		loadedCategories: false,
 	}
 
 	componentDidMount() {
@@ -62,14 +66,11 @@ class App extends Component {
 			category: document.getElementById('add-post-category').value,
 			timestamp: Date.now(),
 		}
-		// var form = document.getElementById('add-post-form');
-		// console.log(form);
-		// var formData = new FormData(form);
+		
 		const {addPostAction} = this.props;
 		const closePostEditModal = this.closePostEditModal;
 
 		addPost(formData, function(data) {
-			console.log(data);
 			const post = {
 				...formData,
 				...data,
@@ -86,8 +87,7 @@ class App extends Component {
 		const closeDeleteModal = this.closeDeleteModal;
 		const postId = this.state.deletePostId;
 
-		const req = deletePost(postId, function(data) {
-			console.log(data);
+		deletePost(postId, function(data) {
 			closeDeleteModal();
 			deletePostAction(postId);
 		}, function(err) {
@@ -97,50 +97,58 @@ class App extends Component {
 	}
 
 	getAllPosts = () => {
-		const {queryPostsAction} = this.props;
+		const {queryPostsAction, addCommentsAction} = this.props;
+		let self = this;
 
 		getPosts(function(data) {
 			queryPostsAction({posts:data});
+			let requests = [];
+			for(let post of data) {
+				var q = getComments(post.id, function(comments) {
+					addCommentsAction({postId: post.id, comments})
+				}, function(err) {
+					console.error(err);
+				})
+
+				requests.push(q);
+			}
+			Promise.all(requests)
+				.then(values => {
+					self.setState({loadedPosts: true})
+				})
 		}, function(err) {
 			console.error(err);
 		});
 		
 	}
 
+	filterComments = (comments, postId) => {
+		if( comments && comments.hasOwnProperty(postId) && Array.isArray(comments[postId]) ) {
+			return comments[postId].filter(comment => !comment.deleted)
+		}
+
+		return []
+	}
 
 	getAllCategories = () => {
 		const {queryCategories} = this.props;
-
+		let self = this
 		getCategories(function(data) {
 			queryCategories(data);
+			self.setState({loadedCategories:true})
+			console.log('loaded categories: ', data)
 		}, function(err) {
 			console.error(err);
 		});
-		// query.then(function(res) {
-		// 	if(res.ok) {
-		// 		return res.json();
-		// 	}
-
-		// 	console.error('Unable to retrieve categories');
-		// }).then(function(data) {
-		// 	queryCategories(data);
-		// }).catch(function(err) {
-		// 	console.error(err);
-		// })
 	}
 
 	onVoteHandler = (voteType, id) => {
-		let msg = "Post has been downvoted";
-		if(voteType === 'upvote') {
-			msg = "Post has been upvoted"
-		}
 
 		const {upvotePostAction, downvotePostAction} = this.props
 
 		return function() {
 
 			const onComplete = function(data) {
-				console.log(data);
 				if( voteType === 'upvote' ) {
 					upvotePostAction(id);
 				} else {
@@ -157,24 +165,74 @@ class App extends Component {
 			} else {
 				downvotePost(id, onComplete, onError);
 			}
-
-			// query.then(function(res) {
-			// 	if( res.ok ) {
-			// 		return res.json();
-			// 	}
-
-			// 	console.error("Unable to " + voteType + " Post with ID: " + id);
-			// }).then(function(data) {
-			// 	console.log(data);
-			// 	if( voteType === 'upvote' ) {
-			// 		upvotePostAction(id);
-			// 	} else {
-			// 		downvotePostAction(id);
-			// 	}
-			// }).catch(function(err) {
-			// 	console.error(err);
-			// });
 		}
+	}
+
+	onCommentVoteHandler = (voteType, id) => {
+		const {upvoteCommentAction, downvoteCommentAction} = this.props
+
+		return function() {
+
+			const onComplete = function(data) {
+				console.log(data)
+				if( voteType === 'upvote' ) {
+					upvoteCommentAction(data);
+				} else {
+					downvoteCommentAction(data);
+				}
+			}
+
+			const onError = function(err) {
+				console.error(err);
+			}
+
+			if( voteType === "upvote" ) {
+				upvoteComment(id, onComplete, onError);
+			} else {
+				downvoteComment(id, onComplete, onError);
+			}
+		}
+	}
+
+	onCommentDeleteHandler = (comment) => (onComplete) => {
+		const {deleteCommentAction} = this.props
+		console.log(comment)
+		// return a function so we can pass in a callback 
+		return function(e) {
+			deleteComment(comment.id, function(data) {
+				deleteCommentAction(comment)
+				onComplete()
+			}, function(err) {
+				console.log(err)
+				onComplete()
+			})
+		}
+		// deletePost(postId, function(data) {
+		// 	closeDeleteModal();
+		// 	deletePostAction(postId);
+		// }, function(err) {
+		// 	console.error(err);
+		// });
+	}
+
+	onCommentAddHandler = (e) => {
+		e.preventDefault();
+
+		// get all the input fields from the form
+		const formData = {
+			body: document.getElementById('add-comment-content').value,
+			author: document.getElementById('add-comment-author').value,
+			parentId: document.getElementById('add-comment-post-id').value,
+			timestamp: Date.now(),
+		}
+		
+		const {addCommentAction} = this.props;
+
+		addComment(formData, function(data) {
+			addCommentAction(data);
+		}, function(err) {
+			console.error(err);
+		});
 	}
 
 	render() {
@@ -186,6 +244,9 @@ class App extends Component {
 
 			postToBeDeleted = deleteP.title
 		}
+
+		const {loadedPosts, loadedCategories} = this.state;
+		const {categories, posts, comments} = this.props;
 
 		return (
 			<div className="App">
@@ -204,21 +265,51 @@ class App extends Component {
 						<div className="main-page">
 							<div className="container">
 								<h2 className="title">The Main page</h2>
-								<PostsList posts={this.props.posts} onDelete={this.openDeleteModal} onVoteHandler={this.onVoteHandler} />
+								<div className="row clearfix">
+									<div className="left-column">
+										{loadedCategories ?
+											<div>
+												<h2>Categories</h2> 
+												<CategoryList categories={categories} />
+											</div>
+											: (
+												<div className="loading">Loading Categories...</div>
+											)
+										}
+										
+									</div>
+									<div className="right-column">
+										<PostsList posts={this.props.posts} onDelete={this.openDeleteModal} onVoteHandler={this.onVoteHandler} />
+									</div>
+								</div>
 							</div>
 						</div>
 					)}/>
 					<Route 
-						path="/categories"
+						path="/:category"
 						exact
 						render={(props) => (
 							<div className="category-page">
 								<h2 className="title">The category Page</h2>
+								<PostsList posts={this.props.posts} category={props.match.params.category} onDelete={this.openDeleteModal} onVoteHandler={this.onVoteHandler} />
 							</div>
 						)}
 					/>
 					<Route exact path="/:category/:post_id" render={(props) => (
-						<PostDetails {...props} />
+						!loadedPosts ? (
+							<div className="loading">Loading...</div>
+						) : (
+							<PostDetails 
+								post={posts.find(post => (post.id === props.match.params.post_id))}
+								comments={this.filterComments(comments, props.match.params.post_id)}
+								onDelete={this.openDeleteModal} 
+								onVoteHandler={this.onVoteHandler} 
+								onCommentAddHandler={this.onCommentAddHandler} 
+								onCommentVoteHandler={this.onCommentVoteHandler}
+								onCommentDeleteHandler={this.onCommentDeleteHandler} 
+							/>
+
+						)
 					)}/>
 
 				<Modal
@@ -281,11 +372,12 @@ class App extends Component {
 	}
 }
 
-function mapStateToProps ({posts, categories}) {
+function mapStateToProps ({posts, categories, comments}) {
 	
 	return {
 		posts,
-		categories
+		categories,
+		comments
 	}
 }
 
@@ -297,7 +389,12 @@ function mapDispatchToProps (dispatch) {
 		queryPostsAction: (data) => dispatch(queryPostsAction(data)),
 		upvotePostAction: (data) => dispatch(upvotePostAction(data)),
 		downvotePostAction: (data) => dispatch(downvotePostAction(data)),
-		queryCategories: (data) => dispatch(queryCategories(data))
+		queryCategories: (data) => dispatch(queryCategories(data)),
+		addCommentAction: (data) => dispatch(addCommentAction(data)),
+		addCommentsAction: (data) => dispatch(addCommentsAction(data)),
+		upvoteCommentAction: (data) => dispatch(upvoteCommentAction(data)),
+		downvoteCommentAction: (data) => dispatch(downvoteCommentAction(data)),
+		deleteCommentAction: (data) => dispatch(deleteCommentAction(data))
 	}
 }
 
