@@ -7,7 +7,7 @@ import FaTrashO from 'react-icons/lib/fa/trash-o';
 class Comment extends Component {
 
 	render() {
-		const {comment, onVoteHandler, onDeleteHandler} = this.props
+		const {comment, onVoteHandler, onDeleteHandler, onEditHandler} = this.props
 		console.log(onVoteHandler);
 
 		return (
@@ -22,7 +22,7 @@ class Comment extends Component {
 							{comment.body}
 						</div>
 						<div className="post-options">
-							<button className="button-icon" title="Edit Post"><FaEdit /></button>
+							<button className="button-icon" title="Edit Post" onClick={onEditHandler(comment)}><FaEdit /></button>
 							<button className="button-icon" title="Delete Post" onClick={onDeleteHandler(comment)}>
 								<FaTrashO className="danger" />
 							</button>

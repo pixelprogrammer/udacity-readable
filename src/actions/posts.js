@@ -14,7 +14,7 @@ export function addPostAction(post) {
 	}
 }
 
-export function editPostAction({post}) {
+export function editPostAction(post) {
 	return {
 		type: EDIT_POST,
 		post

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
-import {Route, Link, Switch, withRouter} from 'react-router-dom';
+import {Route, Link, withRouter} from 'react-router-dom';
 import logo from '../logo.svg';
 import '../App.css';
 import PostsList from './PostsList';
@@ -10,17 +10,19 @@ import {addCommentAction, addCommentsAction, upvoteCommentAction, downvoteCommen
 import FaPlus from 'react-icons/lib/fa/plus';
 import Modal from 'react-modal'
 import uuid from 'uuid/v4'
-import {getPosts, getCategories, addPost, deletePost, upvotePost, downvotePost, addComment, upvoteComment, downvoteComment, getComments, deleteComment} from '../utils/blogAPI'
+import {getPosts, getCategories, addPost, editPost, deletePost, upvotePost, downvotePost, addComment, updateComment, upvoteComment, downvoteComment, getComments, deleteComment} from '../utils/blogAPI'
 import PostDetails from './PostDetails'
 import CategoryList from './CategoryList'
+import PostForm from './PostForm'
 
 class App extends Component {
 
 	state = {
-		editorOpen: false,
+		addModalOpen: false,
+		editModalOpen: false,
 		deleteModalOpen: false,
 		deletePostId: null,
-		editPostId: 0,
+		editPost: {},
 		addPostId: "",
 		loadedPosts: false,
 		loadedCategories: false,
@@ -44,18 +46,28 @@ class App extends Component {
 			deletePostId: null,
 		})
 	}
-	openPostEditModal = () => {
+	openPostAddModal = () => {
 		this.setState({
 			addPostId: uuid(),
-			editorOpen: true
+			addModalOpen: true
+		});
+	}
+
+	closePostAddModal = () => {
+		this.setState({addModalOpen: false});
+	}
+
+	openPostEditModal = (post) => () => {
+		console.log("opening edit modal")
+		this.setState({
+			editPost: post,
+			editModalOpen: true
 		});
 	}
 
 	closePostEditModal = () => {
-		document.getElementById('add-post-id').value = uuid();
-		this.setState({editorOpen: false});
+		this.setState({editModalOpen: false});
 	}
-
 	addPost = () => {
 		// get all the input fields from the form
 		const formData = {
@@ -68,7 +80,7 @@ class App extends Component {
 		}
 		
 		const {addPostAction} = this.props;
-		const closePostEditModal = this.closePostEditModal;
+		const closePostAddModal = this.closePostAddModal;
 
 		addPost(formData, function(data) {
 			const post = {
@@ -76,12 +88,34 @@ class App extends Component {
 				...data,
 			}
 			addPostAction(post);
-			closePostEditModal();
+			closePostAddModal();
 		}, function(err) {
 			console.error(err);
 		});
 	}
 
+	editPost = () => {
+		// get all the input fields from the form
+		const formData = {
+			id: document.getElementById('edit-post-id').value,
+			title: document.getElementById('edit-post-title').value,
+			body: document.getElementById('edit-post-content').value,
+			author: document.getElementById('edit-post-author').value,
+			category: document.getElementById('edit-post-category').value,
+			timestamp: parseInt(document.getElementById('edit-post-timestamp').value),
+		}
+		
+
+		const {editPostAction} = this.props;
+		const closePostEditModal = this.closePostEditModal;
+
+		editPost(formData, function(data) {
+			editPostAction(data);
+			closePostEditModal();
+		}, function(err) {
+			console.error(err);
+		});
+	}
 	onDeletePost = () => {
 		const {deletePostAction} = this.props;
 		const closeDeleteModal = this.closeDeleteModal;
@@ -207,12 +241,6 @@ class App extends Component {
 				onComplete()
 			})
 		}
-		// deletePost(postId, function(data) {
-		// 	closeDeleteModal();
-		// 	deletePostAction(postId);
-		// }, function(err) {
-		// 	console.error(err);
-		// });
 	}
 
 	onCommentAddHandler = (e) => {
@@ -235,6 +263,23 @@ class App extends Component {
 		});
 	}
 
+	onCommentUpdateHandler = (e) => {
+		e.preventDefault();
+
+		// get all the input fields from the form
+		const formData = {
+			body: document.getElementById('edit-comment-content').value,
+			author: document.getElementById('edit-comment-author').value,
+			parentId: document.getElementById('edit-comment-post-id').value,
+			id: document.getElementById('edit-comment-id').value,
+		}
+
+		const {editCommentAction} = this.props;
+
+		console.log(formData);
+
+		// updateComment(formData)
+	}
 	render() {
 		let postToBeDeleted = ""
 		if( this.state.deletePostId ) {
@@ -279,7 +324,12 @@ class App extends Component {
 										
 									</div>
 									<div className="right-column">
-										<PostsList posts={this.props.posts} onDelete={this.openDeleteModal} onVoteHandler={this.onVoteHandler} />
+										<PostsList 
+											posts={this.props.posts} 
+											onDelete={this.openDeleteModal}
+											onEdit={this.openPostEditModal.bind(this)}
+											onVoteHandler={this.onVoteHandler} 
+										/>
 									</div>
 								</div>
 							</div>
@@ -291,7 +341,13 @@ class App extends Component {
 						render={(props) => (
 							<div className="category-page">
 								<h2 className="title">The category Page</h2>
-								<PostsList posts={this.props.posts} category={props.match.params.category} onDelete={this.openDeleteModal} onVoteHandler={this.onVoteHandler} />
+								<PostsList 
+									posts={this.props.posts} 
+									category={props.match.params.category} 
+									onDelete={this.openDeleteModal}
+									onEdit={this.openPostEditModal.bind(this)}
+									onVoteHandler={this.onVoteHandler} 
+								/>
 							</div>
 						)}
 					/>
@@ -302,9 +358,11 @@ class App extends Component {
 							<PostDetails 
 								post={posts.find(post => (post.id === props.match.params.post_id))}
 								comments={this.filterComments(comments, props.match.params.post_id)}
-								onDelete={this.openDeleteModal} 
+								onDelete={this.openDeleteModal}
+								onEdit={this.openPostEditModal.bind(this)}
 								onVoteHandler={this.onVoteHandler} 
 								onCommentAddHandler={this.onCommentAddHandler} 
+								onCommentUpdateHandler={this.onCommentUpdateHandler}
 								onCommentVoteHandler={this.onCommentVoteHandler}
 								onCommentDeleteHandler={this.onCommentDeleteHandler} 
 							/>
@@ -315,37 +373,41 @@ class App extends Component {
 				<Modal
 					className='modal'
 					overlayClassName='overlay'
-					isOpen={this.state.editorOpen}
-					onRequestClose={this.closePostEditModal}
+					isOpen={this.state.addModalOpen}
+					onRequestClose={this.closePostAddModal}
 					contentLabel='Modal'
 				>
 					<h2 className="modal-header">Add Post</h2>
 					<div className="modal-body">
-						<form id="add-post-form" className="post-add-form">
-							<input type="hidden" id="add-post-id" name="id" value={this.state.addPostId} />
-							<div className="form-group">
-								<input id="add-post-title" className="input-full" type="text" name="title" placeholder="Post Title"/>
-							</div>
-							<div className="form-group">
-								<textarea id="add-post-content" className="input-full"  name="body" placeholder="Post Content"></textarea>
-							</div>
-							<div className="form-group">
-								<input id="add-post-author" type="text" name="author" placeholder="Author"/>
-							</div>
-							<div className="form-group">
-								<select id="add-post-category" name="category">
-									<option value="">--Category--</option>
-									{this.props.categories.map((category) => (
-
-										<option key={uuid()} value={category.path}>{category.name}</option>
-									))}
-								</select>
-							</div>
-						</form>
+						<PostForm
+							post={{}}
+							categories={categories}
+							hasSubmit={false}
+						/>
+					</div>
+					<div className="modal-footer">
+						<button className="button" onClick={this.closePostAddModal}>Close</button>
+						<button className="button button-primary" onClick={this.addPost}>Publish</button>
+					</div>
+				</Modal>
+				<Modal
+					className='modal'
+					overlayClassName='overlay'
+					isOpen={this.state.editModalOpen}
+					onRequestClose={this.closePostEditModal}
+					contentLabel='Modal'
+				>
+					<h2 className="modal-header">Edit Post</h2>
+					<div className="modal-body">
+						<PostForm
+							post={this.state.editPost}
+							categories={categories}
+							hasSubmit={false}
+						/>
 					</div>
 					<div className="modal-footer">
 						<button className="button" onClick={this.closePostEditModal}>Close</button>
-						<button className="button button-primary" onClick={this.addPost}>Save</button>
+						<button className="button button-primary" onClick={this.editPost}>Update</button>
 					</div>
 				</Modal>
 				<Modal
@@ -363,7 +425,7 @@ class App extends Component {
 					</div>
 				</Modal>
 				<div className="actions-bar">
-					<button className="action-item" onClick={this.openPostEditModal}>
+					<button className="action-item" onClick={this.openPostAddModal}>
 						<FaPlus /> Add Post
 					</button>
 				</div>

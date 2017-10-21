@@ -57,6 +57,21 @@ export function addPost(data, onComplete, onError) {
 	.catch(onError);
 }
 
+export function editPost(data, onComplete, onError) {
+	apiFetch('http://localhost:3001/posts/' + data.id, {
+		method: 'PUT',
+		body: JSON.stringify(data)
+	})
+	.then(function(res) {
+		if(res.ok) {
+			return res.json();
+		}
+		console.error('Error Adding post');
+	})
+	.then(onComplete)
+	.catch(onError);
+}
+
 export function deletePost(id, onComplete, onError) {
 	console.log('deleting post');
 	apiFetch(API_URL + '/posts/' + id, {

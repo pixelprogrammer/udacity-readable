@@ -15,40 +15,9 @@ class PostDetails extends Component {
 		comments: [],
 	}
 
-	componentDidMount() {
-
-		// // const {post_id, category} = this.props.match.params;
-		// // const self = this
-		// const {post} = this.props
-
-		// if( post ) {
-		// 	getPost(post_id,
-		// 		function(data) {
-					
-		// 			self.setState({
-		// 				loading:false,
-		// 				post: data
-		// 			})
-
-		// 			getComments(post_id, function(data){
-		// 				self.setState({
-		// 					commentsLoading: false,
-		// 					comments: data
-		// 				});
-		// 			}, function(err) {
-		// 				console.error(err)
-		// 			})
-		// 		},
-		// 		function(err) {
-		// 			console.error(err);
-		// 		}
-		// 	)
-		// }
-	}
-
 	render() {
 		// const {post, loading, comments} = this.state
-		const {onDelete, onVoteHandler, onCommentAddHandler, onCommentVoteHandler, onCommentDeleteHandler} = this.props
+		const {onDelete, onEdit, onVoteHandler, onCommentAddHandler, onCommentVoteHandler, onCommentDeleteHandler} = this.props
 		const {post, comments} = this.props
 
 		return (
@@ -58,6 +27,7 @@ class PostDetails extends Component {
 					<Post 
 						post={post} 
 						onDelete={() => {onDelete(post.id)}}
+						onEdit={onEdit(post)}
 						onVoteHandler={onVoteHandler}
 						showDetails={true}
 					/>
@@ -67,7 +37,7 @@ class PostDetails extends Component {
 						<div className="comment-form-container">
 							<CommentForm
 								onSubmitHandler={onCommentAddHandler}
-								comment={null}
+								comment={{}}
 								postId={post.id}
 							/>
 						</div>

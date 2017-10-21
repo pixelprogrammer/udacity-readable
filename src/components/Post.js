@@ -6,7 +6,7 @@ import {displayDate} from '../utils/helpers';
 import {Link} from 'react-router-dom';
 import VoteSystem from './VoteSystem';
 
-export default function Post({post, onDelete, onVoteHandler, showDetails}) {
+export default function Post({post, onDelete, onEdit, onVoteHandler, showDetails}) {
 	
 	if( typeof showDetails === 'undefined' ) {
 		showDetails = false
@@ -29,7 +29,7 @@ export default function Post({post, onDelete, onVoteHandler, showDetails}) {
 					{!showDetails && (
 						<Link to={"/" + post.category + "/" + post.id} className="button-icon" title="View Post"><FaEye /></Link>
 					)}
-					<button className="button-icon" title="Edit Post"><FaEdit /></button>
+					<button className="button-icon" title="Edit Post" onClick={onEdit}><FaEdit /></button>
 					<button className="button-icon" title="Delete Post" onClick={() => {
 						onDelete(post.id);
 					}}>

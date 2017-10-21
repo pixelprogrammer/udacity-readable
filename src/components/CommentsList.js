@@ -2,41 +2,8 @@ import React, {Component} from 'react'
 import Comment from './Comment'
 import uuid from 'uuid/v4'
 import Modal from 'react-modal'
-
-const sortingOptions = {
-	best:{
-		name: "Best",
-		callback: sortByBest
-	},
-	newest:{
-		name: "Newest",
-		callback: sortByNewest
-	}
-}
-
-function sortByBest(a,b) {
-	if( a.voteScore < b.voteScore) {
-		return 1
-	}
-
-	if( a.voteScore > b.voteScore ) {
-		return -1
-	}
-
-	return 0
-}
-
-function sortByNewest(a,b) {
-	if( a.timestamp < b.timestamp) {
-		return 1
-	}
-
-	if( a.timestamp > b.timestamp ) {
-		return -1
-	}
-
-	return 0
-}
+import {sortingOptions} from '../utils/helpers'
+import CommentForm from './CommentForm'
 
 
 class CommentsList extends Component {
@@ -45,6 +12,8 @@ class CommentsList extends Component {
 		deleteModalIsOpen: false,
 		commentToDelete: null,
 		deleting: false,
+		commentToEdit: {},
+		editModalIsOpen: false,
 	}
 
 	sortChangeHandler(self) {
@@ -74,13 +43,33 @@ class CommentsList extends Component {
 			deleteModalIsOpen: false
 		})
 	}
-	
+	onCommentEditHandler = (comment) => (e) => {
+		console.log(comment)
+		this.setState({
+			editModalIsOpen: true,
+			commentToEdit: comment,
+		})
+	}
+	closeEditCommentModal = () => {
+		console.log('closing modal')
+
+		this.setState({
+			editModalIsOpen: false,
+		})
+	}
 	completeDelete() {
 		this.setState({
 			deleting: false,
 			deleteModalIsOpen: false,
 			commentToDelete: null,
 		})
+	}
+
+	updateCommentHandler() {
+		const {onCommentUpdateHandler} = this.props
+		console.log('updating comment')
+
+		this.closeEditCommentModal()
 	}
 	render() {
 
@@ -103,7 +92,13 @@ class CommentsList extends Component {
 						</div>
 						<div className="comments-list">
 							{comments.sort(sortingOptions[this.state.sortby].callback).map((comment) => (
-								<Comment key={uuid()} comment={comment} onVoteHandler={onCommentVoteHandler} onDeleteHandler={this.buttonDeleteHandler}/>
+								<Comment 
+									key={uuid()} 
+									comment={comment} 
+									onVoteHandler={onCommentVoteHandler} 
+									onDeleteHandler={this.buttonDeleteHandler} 
+									onEditHandler={this.onCommentEditHandler}
+								/>
 							))}
 						</div>
 						<Modal
@@ -118,6 +113,25 @@ class CommentsList extends Component {
 							<div className="modal-footer">
 								<button className="button button-danger" onClick={onCommentDeleteHandler(this.state.commentToDelete)(this.completeDelete.bind(this))}>Delete Comment</button>
 								<button className="button" onClick={this.closeDeleteCommentModal.bind(this)}>Cancel</button>
+							</div>
+						</Modal>
+						<Modal
+							className="modal"
+							overlayClassName="overlay"
+							isOpen={this.state.editModalIsOpen}
+							onRequestClose={this.onEditModalClose}
+							contentLabel="Modal"
+						>
+							<h2 className="modal-header">Edit Comment</h2>
+							<CommentForm 
+								comment={this.state.commentToEdit}
+								onSubmitHandler={false}
+								postId={this.state.commentToEdit.postId}
+								actionPrefix={"edit"}
+							/>
+							<div className="modal-footer">
+								<button className="button button-primary" onClick={this.updateCommentHandler.bind(this)}>Update</button>
+								<button className="button" onClick={this.closeEditCommentModal}>Cancel</button>
 							</div>
 						</Modal>
 					</div>
