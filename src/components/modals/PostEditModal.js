@@ -7,19 +7,6 @@ import {editPostAction, isEditingPostAction, editingPostAction, deletePostAction
 
 class PostEditModal extends Component {
 
-	onDelete = () => {
-		const {deletePostAction} = this.props;
-		const closeDeletePostModal = this.closeDeletePostModal;
-		const post = this.state.postToDelete;
-
-		deletePost(post.id, function(data) {
-			closeDeletePostModal();
-			deletePostAction(post.id);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
 	closeModal = () => {
 		this.props.isEditingPostAction(false)
 		this.props.editingPostAction({})
@@ -50,8 +37,6 @@ class PostEditModal extends Component {
 	render() {
 		
 		const {isEditing, categories, editingPost} = this.props
-
-		console.log('Is editing: ', isEditing)
 
 		return (
 

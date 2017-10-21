@@ -16,6 +16,7 @@ import CategoryList from './CategoryList'
 import PostForm from './PostForm'
 import PostEditModal from './modals/PostEditModal'
 import PostAddModal from './modals/PostAddModal'
+import PostDeleteModal from './modals/PostDeleteModal'
 
 class App extends Component {
 
@@ -302,7 +303,8 @@ class App extends Component {
 					)}/>
 
 				<PostAddModal />
-				<PostEditModal />				
+				<PostEditModal />
+				<PostDeleteModal />			
 				<div className="actions-bar">
 					<button className="action-item" onClick={this.addPostButton}>
 						<FaPlus /> Add Post

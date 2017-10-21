@@ -58,40 +58,6 @@ class PostsList extends Component {
 						</li>
 					))}
 				</ul>
-				<Modal
-					className="modal"
-					overlayClassName="overlay"
-					isOpen={this.state.deleteModalOpen}
-					onRequestClose={this.closeDeletePostModal}
-					contentLabel="Modal"
-				>
-					<h2 className="modal-header">Delete Post</h2>
-					<div className="modal-body">Are you sure you want to delete this post? <strong>{this.state.postToDelete.title}</strong></div>
-					<div className="modal-footer">
-						<button className="button button-danger" onClick={this.onDelete}>Delete Post</button>
-						<button className="button" onClick={this.closeDeletePostModal}>Cancel</button>
-					</div>
-				</Modal>
-				<Modal
-					className='modal'
-					overlayClassName='overlay'
-					isOpen={this.state.editModalOpen}
-					onRequestClose={this.closeEditPostModal}
-					contentLabel='Modal'
-				>
-					<h2 className="modal-header">Edit Post</h2>
-					<div className="modal-body">
-						<PostForm
-							post={this.state.postToEdit}
-							categories={categories}
-							hasSubmit={false}
-						/>
-					</div>
-					<div className="modal-footer">
-						<button className="button" onClick={this.closeEditPostModal}>Close</button>
-						<button className="button button-primary" onClick={this.onEdit}>Update</button>
-					</div>
-				</Modal>
 			</div>
 		)
 		

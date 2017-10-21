@@ -49,7 +49,7 @@ function blogPosts (state = initialState, action) {
 				}),
 			}
 		case DELETE_POST:
-			newState = {
+			return {
 				...state,
 				posts: state.posts.filter((post) => action.id !== post.id)
 			}

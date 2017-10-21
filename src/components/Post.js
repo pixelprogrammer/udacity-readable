@@ -19,14 +19,13 @@ class Post extends Component {
 	}
 
 	onDelete = (post) => () => {
-		console.log('trying to delete post: ', post)
 		const {isDeletingPostAction, deletingPostAction} = this.props
 
 		isDeletingPostAction(true)
 		deletingPostAction(post)
 	}
 	render() {
-		const {post, onDelete, onEdit, onVoteHandler} = this.props
+		const {post} = this.props
 		let {showDetails} = this.props
 		
 		if( typeof showDetails === 'undefined' ) {
@@ -51,9 +50,7 @@ class Post extends Component {
 							<Link to={"/" + post.category + "/" + post.id} className="button-icon" title="View Post"><FaEye /></Link>
 						)}
 						<button className="button-icon" title="Edit Post" onClick={this.onEdit(post)}><FaEdit /></button>
-						<button className="button-icon" title="Delete Post" onClick={() => {
-							onDelete(post.id);
-						}}>
+						<button className="button-icon" title="Delete Post" onClick={this.onDelete(post)}>
 							<FaTrashO className="danger" />
 						</button>
 					</div>
