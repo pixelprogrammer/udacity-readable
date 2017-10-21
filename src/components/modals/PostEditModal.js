@@ -36,7 +36,6 @@ class PostEditModal extends Component {
 			timestamp: parseInt(document.getElementById('edit-post-timestamp').value),
 		}
 		
-
 		const {editPostAction} = this.props;
 		const closeModal = this.closeModal;
 
@@ -47,7 +46,6 @@ class PostEditModal extends Component {
 			console.error(err);
 		});
 	}
-
 
 	render() {
 		

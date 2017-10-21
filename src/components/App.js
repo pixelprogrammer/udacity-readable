@@ -4,7 +4,7 @@ import {Route, Link, withRouter} from 'react-router-dom';
 import logo from '../logo.svg';
 import '../App.css';
 import PostsList from './PostsList';
-import {addPostAction, editPostAction, deletePostAction, queryPostsAction, upvotePostAction, downvotePostAction} from '../actions/posts';
+import {addPostAction, editPostAction, deletePostAction, queryPostsAction, upvotePostAction, downvotePostAction, isAddingPostAction} from '../actions/posts';
 import {queryCategories} from '../actions/categories';
 import {addCommentAction, addCommentsAction, upvoteCommentAction, downvoteCommentAction, deleteCommentAction} from '../actions/comments';
 import FaPlus from 'react-icons/lib/fa/plus';
@@ -15,6 +15,7 @@ import PostDetails from './PostDetails'
 import CategoryList from './CategoryList'
 import PostForm from './PostForm'
 import PostEditModal from './modals/PostEditModal'
+import PostAddModal from './modals/PostAddModal'
 
 class App extends Component {
 
@@ -28,30 +29,11 @@ class App extends Component {
 		this.getAllCategories();
 	}
 
-	addPost = () => {
-		// get all the input fields from the form
-		const formData = {
-			id: document.getElementById('add-post-id').value,
-			title: document.getElementById('add-post-title').value,
-			body: document.getElementById('add-post-content').value,
-			author: document.getElementById('add-post-author').value,
-			category: document.getElementById('add-post-category').value,
-			timestamp: Date.now(),
-		}
-		
-		const {addPostAction} = this.props;
-		const closePostAddModal = this.closePostAddModal;
+	addPostButton = () => {
+		const {isAddingPostAction} = this.props
 
-		addPost(formData, function(data) {
-			const post = {
-				...formData,
-				...data,
-			}
-			addPostAction(post);
-			closePostAddModal();
-		}, function(err) {
-			console.error(err);
-		});
+		console.log('Clicked on the add post button')
+		isAddingPostAction(true)
 	}
 
 	editPost = () => {
@@ -319,30 +301,10 @@ class App extends Component {
 						)
 					)}/>
 
-				<Modal
-					className='modal'
-					overlayClassName='overlay'
-					isOpen={this.state.addModalOpen}
-					onRequestClose={this.closePostAddModal}
-					contentLabel='Modal'
-				>
-					<h2 className="modal-header">Add Post</h2>
-					<div className="modal-body">
-						<PostForm
-							post={{}}
-							categories={categories}
-							hasSubmit={false}
-						/>
-					</div>
-					<div className="modal-footer">
-						<button className="button" onClick={this.closePostAddModal}>Close</button>
-						<button className="button button-primary" onClick={this.addPost}>Publish</button>
-					</div>
-				</Modal>
-				
+				<PostAddModal />
 				<PostEditModal />				
 				<div className="actions-bar">
-					<button className="action-item" onClick={this.openPostAddModal}>
+					<button className="action-item" onClick={this.addPostButton}>
 						<FaPlus /> Add Post
 					</button>
 				</div>
@@ -363,6 +325,7 @@ function mapStateToProps ({blogPosts, categories, comments}) {
 function mapDispatchToProps (dispatch) {
 	return {
 		addPostAction: (data) => dispatch(addPostAction(data)),
+		isAddingPostAction: (data) => dispatch(isAddingPostAction(data)),
 		editPostAction: (data) => dispatch(editPostAction(data)),
 		deletePostAction: (data) => dispatch(deletePostAction(data)),
 		queryPostsAction: (data) => dispatch(queryPostsAction(data)),

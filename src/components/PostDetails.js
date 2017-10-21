@@ -3,7 +3,7 @@ import {getPost, getComments} from '../utils/blogAPI'
 import CommentsList from './CommentsList'
 import CommentForm from './CommentForm'
 import uuid from 'uuid/v4'
-import PostsList from './PostsList'
+import Post from './Post'
 
 class PostDetails extends Component {
 
@@ -24,8 +24,8 @@ class PostDetails extends Component {
 			<div className="container">
 			{post ? (
 				<div>
-					<PostsList
-						posts={[post]}
+					<Post 
+						post={post} 
 						showDetails={true}
 					/>
 					<div className="comments-section">
@@ -34,7 +34,7 @@ class PostDetails extends Component {
 						<div className="comment-form-container">
 							<CommentForm
 								onSubmitHandler={onCommentAddHandler}
-								comment={{}}
+								comment={comments}
 								postId={post.id}
 							/>
 						</div>
