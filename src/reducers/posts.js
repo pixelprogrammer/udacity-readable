@@ -54,7 +54,6 @@ function blogPosts (state = initialState, action) {
 				posts: state.posts.filter((post) => action.id !== post.id)
 			}
 			
-			return newState;
 		case QUERY_POSTS:
 			newState = {
 				...state,
@@ -62,25 +61,30 @@ function blogPosts (state = initialState, action) {
 			}
 			return newState;
 		case UPVOTE_POST:
-			newState = state.map((post) => {
-				if( action.id === post.id ) {
-					console.log('voted post up: ' + post.title);
-					post.voteScore++;
-				}
+			return {
+				...state,
+				posts: state.posts.map((post) => {
+					if( action.id === post.id ) {
+						post.voteScore++
+					}
 
-				return post;
-			});
-			return newState;
+					return post
+				})
+			}
+
+			
 		case DOWNVOTE_POST:
-			newState = state.map((post) => {
-				if( action.id === post.id ) {
-					post.voteScore--;
-				}
+			return {
+				...state,
+				posts: state.posts.map((post) => {
+					if( action.id === post.id ) {
+						post.voteScore--
+					}
 
-				return post;
-			});
+					return post
+				})
+			}
 
-			return newState;
 		case ADDING_POST:
 			return {
 				...state,

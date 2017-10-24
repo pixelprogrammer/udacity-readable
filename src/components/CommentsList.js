@@ -101,39 +101,7 @@ class CommentsList extends Component {
 								/>
 							))}
 						</div>
-						<Modal
-							className="modal"
-							overlayClassName="overlay"
-							isOpen={this.state.deleteModalIsOpen}
-							onRequestClose={this.closeDeleteCommentModal}
-							contentLabel="Modal"
-						>
-							<h2 className="modal-header">Delete Comment</h2>
-							<div className="modal-body">Are you sure you want to delete this comment? <strong>{this.state.commentToDelete ? this.state.commentToDelete.body : ''}</strong></div>
-							<div className="modal-footer">
-								<button className="button button-danger" onClick={onCommentDeleteHandler(this.state.commentToDelete)(this.completeDelete.bind(this))}>Delete Comment</button>
-								<button className="button" onClick={this.closeDeleteCommentModal.bind(this)}>Cancel</button>
-							</div>
-						</Modal>
-						<Modal
-							className="modal"
-							overlayClassName="overlay"
-							isOpen={this.state.editModalIsOpen}
-							onRequestClose={this.onEditModalClose}
-							contentLabel="Modal"
-						>
-							<h2 className="modal-header">Edit Comment</h2>
-							<CommentForm 
-								comment={this.state.commentToEdit}
-								onSubmitHandler={false}
-								postId={this.state.commentToEdit.postId}
-								actionPrefix={"edit"}
-							/>
-							<div className="modal-footer">
-								<button className="button button-primary" onClick={this.updateCommentHandler.bind(this)}>Update</button>
-								<button className="button" onClick={this.closeEditCommentModal}>Cancel</button>
-							</div>
-						</Modal>
+						
 					</div>
 				) : (
 					<div className="message">No Comments</div>

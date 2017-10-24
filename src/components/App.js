@@ -17,6 +17,8 @@ import PostForm from './PostForm'
 import PostEditModal from './modals/PostEditModal'
 import PostAddModal from './modals/PostAddModal'
 import PostDeleteModal from './modals/PostDeleteModal'
+import CommentEditModal from './modals/CommentEditModal'
+import CommentDeleteModal from './modals/CommentDeleteModal'
 
 class App extends Component {
 
@@ -59,19 +61,19 @@ class App extends Component {
 			console.error(err);
 		});
 	}
-	onDeletePost = () => {
-		const {deletePostAction} = this.props;
-		const closeDeleteModal = this.closeDeleteModal;
-		const postId = this.state.deletePostId;
+	// onDeletePost = () => {
+	// 	const {deletePostAction} = this.props;
+	// 	const closeDeleteModal = this.closeDeleteModal;
+	// 	const postId = this.state.deletePostId;
 
-		deletePost(postId, function(data) {
-			closeDeleteModal();
-			deletePostAction(postId);
-		}, function(err) {
-			console.error(err);
-		});
+	// 	deletePost(postId, function(data) {
+	// 		closeDeleteModal();
+	// 		deletePostAction(postId);
+	// 	}, function(err) {
+	// 		console.error(err);
+	// 	});
 
-	}
+	// }
 
 	getAllPosts = () => {
 		const {queryPostsAction, addCommentsAction} = this.props;
@@ -82,7 +84,9 @@ class App extends Component {
 			let requests = [];
 			for(let post of data) {
 				var q = getComments(post.id, function(comments) {
-					addCommentsAction({postId: post.id, comments})
+					if(comments && comments.length > 0) {
+						addCommentsAction({postId: post.id, comments})
+					}
 				}, function(err) {
 					console.error(err);
 				})
@@ -186,43 +190,6 @@ class App extends Component {
 		}
 	}
 
-	onCommentAddHandler = (e) => {
-		e.preventDefault();
-
-		// get all the input fields from the form
-		const formData = {
-			body: document.getElementById('add-comment-content').value,
-			author: document.getElementById('add-comment-author').value,
-			parentId: document.getElementById('add-comment-post-id').value,
-			timestamp: Date.now(),
-		}
-		
-		const {addCommentAction} = this.props;
-
-		addComment(formData, function(data) {
-			addCommentAction(data);
-		}, function(err) {
-			console.error(err);
-		});
-	}
-
-	onCommentUpdateHandler = (e) => {
-		e.preventDefault();
-
-		// get all the input fields from the form
-		const formData = {
-			body: document.getElementById('edit-comment-content').value,
-			author: document.getElementById('edit-comment-author').value,
-			parentId: document.getElementById('edit-comment-post-id').value,
-			id: document.getElementById('edit-comment-id').value,
-		}
-
-		const {editCommentAction} = this.props;
-
-		console.log(formData);
-
-		// updateComment(formData)
-	}
 	render() {
 		let postToBeDeleted = ""
 		const {loadedPosts, loadedCategories} = this.state;
@@ -245,9 +212,6 @@ class App extends Component {
 					<div className="company-title"><img className="App-logo" src={logo} alt="logo"/>Readable</div>
 					<nav className="main-nav nav-right">
 						<li className="menu-item"><Link className="item" to="/">Home</Link></li>
-
-						<li className="menu-item"><Link className="item" to="/categories">Categories</Link></li>
-						<li className="menu-item"></li>
 					</nav>
 
 				</div>
@@ -283,10 +247,24 @@ class App extends Component {
 						render={(props) => (
 							<div className="category-page">
 								<h2 className="title">The category Page</h2>
-								<PostsList 
-									posts={this.props.posts} 
-									category={props.match.params.category} 
-								/>
+								<div className="left-column">
+									{loadedCategories ?
+										<div>
+											<h2>Categories</h2> 
+											<CategoryList categories={categories} />
+										</div>
+										: (
+											<div className="loading">Loading Categories...</div>
+										)
+									}
+									
+								</div>
+								<div className="right-column">
+									<PostsList 
+										posts={posts} 
+										category={props.match.params.category} 
+									/>
+								</div>
 							</div>
 						)}
 					/>
@@ -296,7 +274,7 @@ class App extends Component {
 						) : (
 							<PostDetails 
 								post={posts.find(post => (post.id === props.match.params.post_id))}
-								comments={this.filterComments(comments, props.match.params.post_id)}
+								comments={this.filterComments(comments.comments, props.match.params.post_id)}
 							/>
 
 						)
@@ -304,7 +282,9 @@ class App extends Component {
 
 				<PostAddModal />
 				<PostEditModal />
-				<PostDeleteModal />			
+				<PostDeleteModal />
+				<CommentEditModal />
+				<CommentDeleteModal />		
 				<div className="actions-bar">
 					<button className="action-item" onClick={this.addPostButton}>
 						<FaPlus /> Add Post

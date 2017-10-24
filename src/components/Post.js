@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import FaEdit from 'react-icons/lib/fa/edit'
 import FaEye from 'react-icons/lib/fa/eye'
+import FaCommentO from 'react-icons/lib/fa/comment-o'
 import FaTrashO from 'react-icons/lib/fa/trash-o'
 import {displayDate} from '../utils/helpers'
 import {Link} from 'react-router-dom'
@@ -24,10 +25,18 @@ class Post extends Component {
 		isDeletingPostAction(true)
 		deletingPostAction(post)
 	}
-	render() {
+
+	filterPostComments = (comments) => {
 		const {post} = this.props
+		console.log("filtering comments: ", comments)
+		return comments[post.id] ? comments[post.id].length : 0
+	}
+
+	render() {
+		const {post, comments} = this.props
 		let {showDetails} = this.props
-		
+		const postComments = this.filterPostComments(comments)
+
 		if( typeof showDetails === 'undefined' ) {
 			showDetails = false
 		}
@@ -36,6 +45,9 @@ class Post extends Component {
 			<div className="post-item">
 				<div className="post-box">
 					<h2 className="post-title">{post.title}</h2>
+					<p>
+						<FaCommentO /> {postComments}
+					</p>
 					<p>Date: {displayDate(post.timestamp)}</p>
 					<p>
 						<span>Author: {post.author}</span>
@@ -63,6 +75,12 @@ class Post extends Component {
 	}
 }
 
+function mapStateToProps({comments}) {
+	return {
+		comments: comments.comments,
+	}
+}
+
 function mapDispatchToProps(dispatch) {
 	return {
 		isEditingPostAction: (data) => dispatch(isEditingPostAction(data)),
@@ -71,4 +89,4 @@ function mapDispatchToProps(dispatch) {
 		deletingPostAction: (data) => dispatch(deletingPostAction(data)),
 	}
 }
-export default connect(null, mapDispatchToProps)(Post)
+export default connect(mapStateToProps, mapDispatchToProps)(Post)

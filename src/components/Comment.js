@@ -1,14 +1,24 @@
 import React, {Component} from 'react'
 import VoteSystem from './VoteSystem'
-import {displayDate} from '../utils/helpers';
-import FaEdit from 'react-icons/lib/fa/edit';
-import FaTrashO from 'react-icons/lib/fa/trash-o';
+import {displayDate} from '../utils/helpers'
+import FaEdit from 'react-icons/lib/fa/edit'
+import FaTrashO from 'react-icons/lib/fa/trash-o'
+import CommentVoter from './CommentVoter'
+import {connect} from 'react-redux'
+import {isEditingCommentAction, editingCommentAction, isDeletingCommentAction, deletingCommentAction} from '../actions/comments'
 
 class Comment extends Component {
+	onEditHandler = (comment) => () => {
+		this.props.isEditingCommentAction(true)
+		this.props.editingCommentAction(comment)
+	}
+	onDeleteHandler = (comment) => () =>  {
+		this.props.isDeletingCommentAction(true)
+		this.props.deletingCommentAction(comment)
+	}
 
 	render() {
-		const {comment, onVoteHandler, onDeleteHandler, onEditHandler} = this.props
-		console.log(onVoteHandler);
+		const {comment, onVoteHandler} = this.props
 
 		return (
 			<div className="container">
@@ -22,18 +32,14 @@ class Comment extends Component {
 							{comment.body}
 						</div>
 						<div className="post-options">
-							<button className="button-icon" title="Edit Post" onClick={onEditHandler(comment)}><FaEdit /></button>
-							<button className="button-icon" title="Delete Post" onClick={onDeleteHandler(comment)}>
+							<button className="button-icon" title="Edit Post" onClick={this.onEditHandler(comment)}><FaEdit /></button>
+							<button className="button-icon" title="Delete Post" onClick={this.onDeleteHandler(comment)}>
 								<FaTrashO className="danger" />
 							</button>
 						</div>
 					</div>
 					<div className="post-box-sidebar">
-						<VoteSystem 
-							voteScore={comment.voteScore}
-							upvoteHandler={onVoteHandler('upvote', comment.id)}
-							downvoteHandler={onVoteHandler('downvote', comment.id)}
-						/>
+						<CommentVoter comment={comment} />
 					</div>
 				</div>	
 			</div>
@@ -41,4 +47,12 @@ class Comment extends Component {
 	}
 }
 
-export default Comment
+function mapDispatchToProps(dispatch) {
+	return {
+		isEditingCommentAction: (data) => dispatch(isEditingCommentAction(data)),
+		editingCommentAction: (data) => dispatch(editingCommentAction(data)),
+		isDeletingCommentAction: (data) => dispatch(isDeletingCommentAction(data)),
+		deletingCommentAction: (data) => dispatch(deletingCommentAction(data)),
+	}
+}
+export default connect(null, mapDispatchToProps)(Comment)

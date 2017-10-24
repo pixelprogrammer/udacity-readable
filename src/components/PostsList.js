@@ -31,11 +31,15 @@ class PostsList extends Component {
 	render() {
 		const {posts, onVoteHandler, onDelete, onEdit, category, categories, showDetails} = this.props
 
-		const showPost = typeof category === 'undefined'
-		const postList = posts.filter((post) => showPost || post.category === category);
+		const showPosts = typeof category === 'undefined'
+		const postList = posts.filter((post) => showPosts || post.category === category);
 
 		if(posts.length === 0 ) {
 			return <p className="message notification">No Posts were added yet. What are you waiting for.....go add some.</p>
+		}
+
+		if(postList.length === 0 && category) {
+			return <p className="message notification">No Posts for {category} category</p> 
 		}
 		return (
 			<div>

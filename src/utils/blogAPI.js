@@ -179,6 +179,21 @@ export function addComment(comment, onComplete, onError) {
 	.catch(onError)
 }
 
+export function updateComment(data, onComplete, onError) {
+	apiFetch(API_URL + '/comments/' + data.id, {
+		method: 'PUT',
+		body: JSON.stringify(data)
+	} )
+	.then(function(res) {
+		if(res.ok) {
+			return res.json()
+		}
+
+		console.error("Error with server when updating comment")
+	})
+	.then(onComplete)
+	.catch(onError)
+}
 export function upvoteComment(id, onComplete, onError) {
 	apiFetch(API_URL + '/comments/' + id, {
 		method: "POST",
@@ -202,7 +217,7 @@ export function downvoteComment(id, onComplete, onError) {
 		if(res.ok) {
 			return res.json();
 		}
-		console.error('Error deleting comment with id: ' + id);
+		console.error('Error downvoting comment with id: ' + id);
 	})
 	.then(onComplete)
 	.catch(onError)
