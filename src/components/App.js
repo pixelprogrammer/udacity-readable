@@ -29,6 +29,12 @@ class App extends Component {
 		this.getAllCategories();
 	}
 
+	addPostButton = () => {
+		const {isAddingPostAction} = this.props
+
+		isAddingPostAction(true)
+	}
+	
 	getAllPosts = () => {
 		const {queryPostsAction, addCommentsAction} = this.props;
 		let self = this;
