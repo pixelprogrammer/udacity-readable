@@ -36,7 +36,11 @@ class PostVoter extends Component {
 
 		const {post} = this.props
 		return (
-			<VoteSystem voteScore={post.voteScore} upvoteHandler={this.onVoteHandler('upvote', post.id).bind(this)} downvoteHandler={this.onVoteHandler('downvote', post.id).bind(this)} />
+			<VoteSystem 
+				voteScore={post.voteScore} 
+				upvoteHandler={this.onVoteHandler('upvote', post.id)} 
+				downvoteHandler={this.onVoteHandler('downvote', post.id)} 
+			/>
 		)
 	}
 }

@@ -71,7 +71,6 @@ function blogPosts (state = initialState, action) {
 					return post
 				})
 			}
-
 			
 		case DOWNVOTE_POST:
 			return {
