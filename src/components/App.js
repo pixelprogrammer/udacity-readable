@@ -34,7 +34,7 @@ class App extends Component {
 
 		isAddingPostAction(true)
 	}
-	
+
 	getAllPosts = () => {
 		const {queryPostsAction, addCommentsAction} = this.props;
 		let self = this;
@@ -128,24 +128,27 @@ class App extends Component {
 						exact
 						render={(props) => (
 							<div className="category-page">
-								<h2 className="title">The category Page</h2>
-								<div className="left-column">
-									{loadedCategories ?
-										<div>
-											<h2>Categories</h2> 
-											<CategoryList categories={categories} />
-										</div>
-										: (
-											<div className="loading">Loading Categories...</div>
-										)
-									}
-									
-								</div>
-								<div className="right-column">
-									<PostsList 
-										posts={posts} 
-										category={props.match.params.category} 
-									/>
+								<div className="container">
+
+									<h2 className="title">The category Page</h2>
+									<div className="left-column">
+										{loadedCategories ?
+											<div>
+												<h2>Categories</h2> 
+												<CategoryList categories={categories} />
+											</div>
+											: (
+												<div className="loading">Loading Categories...</div>
+											)
+										}
+										
+									</div>
+									<div className="right-column">
+										<PostsList 
+											posts={posts} 
+											category={props.match.params.category} 
+										/>
+									</div>
 								</div>
 							</div>
 						)}
