@@ -17,7 +17,7 @@ The Readable app requires a backend server for the Front End to work with. Insta
 
 Now you are ready to rock. Lets get the front end framework and get that running. In another directory do the following:
 
-`git clone git@github.com/pixelprogrammer/udacity-readable readable`
+`git clone https://github.com/pixelprogrammer/udacity-readable.git readable`
 
 	- `cd readable`
 	- `npm install`
