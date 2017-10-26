@@ -69,11 +69,11 @@ function comments (state = initialState, action) {
 				comments: {
 					...state.comments,
 					[action.comment.parentId]: state.comments[action.comment.parentId].map(c => {
-						if( c.id === action.comment.id ) {
-							c.voteScore++;
+						if( action.comment.id === c.id ) {
+							return {...c, voteScore: ++c.voteScore}
 						}
 
-						return c;
+						return c
 					})
 				}
 			}
@@ -83,11 +83,11 @@ function comments (state = initialState, action) {
 				comments: {
 					...state.comments,
 					[action.comment.parentId]: state.comments[action.comment.parentId].map(c => {
-						if( c.id === action.comment.id ) {
-							c.voteScore--;
+						if( action.comment.id === c.id ) {
+							return {...c, voteScore: --c.voteScore}
 						}
 
-						return c;
+						return c
 					})
 				}
 			}

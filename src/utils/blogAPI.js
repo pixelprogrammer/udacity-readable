@@ -86,10 +86,6 @@ export function deletePost(id, onComplete, onError) {
 	.catch(onError);
 }
 
-export function updatePost(data) {
-	console.log('updating post');
-}
-
 export function upvotePost(id, onComplete, onError) {
 	apiFetch(API_URL + '/posts/' + id, {
 		method: "POST",

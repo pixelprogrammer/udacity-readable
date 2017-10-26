@@ -9,7 +9,7 @@ class PostVoter extends Component {
 	onVoteHandler = (voteType, id) => {
 
 		const {upvotePostAction, downvotePostAction} = this.props
-
+		
 		return function() {
 
 			const onComplete = function(data) {

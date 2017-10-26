@@ -61,11 +61,12 @@ function blogPosts (state = initialState, action) {
 			}
 			return newState;
 		case UPVOTE_POST:
+
 			return {
 				...state,
 				posts: state.posts.map((post) => {
 					if( action.id === post.id ) {
-						post.voteScore++
+						return {...post, voteScore: ++post.voteScore}
 					}
 
 					return post
@@ -77,7 +78,7 @@ function blogPosts (state = initialState, action) {
 				...state,
 				posts: state.posts.map((post) => {
 					if( action.id === post.id ) {
-						post.voteScore--
+						return {...post, voteScore: --post.voteScore}
 					}
 
 					return post

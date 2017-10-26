@@ -42,13 +42,6 @@ class PostDetails extends Component {
 		}
 	}
 
-	state = {
-		commentsLoading: true,
-		loading: true,
-		post: null,
-		comments: [],
-	}
-
 	render() {
 		const {post, comments} = this.props
 

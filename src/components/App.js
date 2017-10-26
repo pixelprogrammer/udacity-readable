@@ -86,7 +86,6 @@ class App extends Component {
 		const {loadedPosts, loadedCategories} = this.state;
 		const {categories, comments, blogPosts} = this.props;
 		const {posts} = blogPosts
-
 		return (
 			<div className="App">
 
@@ -158,6 +157,7 @@ class App extends Component {
 							<div className="loading">Loading...</div>
 						) : (
 							<PostDetails 
+								posts={posts}
 								post={posts.find(post => (post.id === props.match.params.post_id))}
 								comments={this.filterComments(comments.comments, props.match.params.post_id)}
 							/>
