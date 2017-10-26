@@ -11,19 +11,19 @@ The Readable app requires a backend server for the Front End to work with. Insta
 
 `git clone https://github.com/udacity/reactnd-project-readable-starter.git readable-server`
 
-	- `cd readable-server/api-server`
-	- `npm install`
-	- `node server`
+`cd readable-server/api-server`
+`npm install`
+`node server`
 
 Now you are ready to rock. Lets get the front end framework and get that running. In another directory do the following:
 
 `git clone https://github.com/pixelprogrammer/udacity-readable.git readable`
 
-	- `cd readable`
-	- `npm install`
-	- `npm start`
+`cd readable`
+`npm install`
+`npm start`
 
-Visit localhost:3000 to view the Readable site.
+Visit [http://localhost:3000](http://localhost:3000) to view the Readable site.
 
 ## Commands
 
