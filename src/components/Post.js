@@ -12,7 +12,6 @@ import {connect} from 'react-redux'
 class Post extends Component {
 
 	onEdit = (post) => () => {
-		console.log('trying to edit post: ', post)
 		const {isEditingPostAction, editingPostAction} = this.props
 
 		isEditingPostAction(true)
@@ -28,7 +27,6 @@ class Post extends Component {
 
 	filterPostComments = (comments) => {
 		const {post} = this.props
-		console.log("filtering comments: ", comments)
 		return comments[post.id] ? comments[post.id].length : 0
 	}
 

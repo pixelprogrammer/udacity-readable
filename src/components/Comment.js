@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import VoteSystem from './VoteSystem'
 import {displayDate} from '../utils/helpers'
 import FaEdit from 'react-icons/lib/fa/edit'
 import FaTrashO from 'react-icons/lib/fa/trash-o'
@@ -18,7 +17,7 @@ class Comment extends Component {
 	}
 
 	render() {
-		const {comment, onVoteHandler} = this.props
+		const {comment} = this.props
 
 		return (
 			<div className="container">

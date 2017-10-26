@@ -1,5 +1,4 @@
 import React, {Component} from 'react'
-import uuid from 'uuid/v4'
 
 /**
  * CommentForm can be used to both add/edit a content

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import Modal from 'react-modal'
 import {connect} from 'react-redux'
-import {editPost, deletePost} from '../../utils/blogAPI'
+import {editPost} from '../../utils/blogAPI'
 import PostForm from '../PostForm'
 import {editPostAction, isEditingPostAction, editingPostAction, deletePostAction} from '../../actions/posts'
 
@@ -20,7 +20,7 @@ class PostEditModal extends Component {
 			body: document.getElementById('edit-post-content').value,
 			author: document.getElementById('edit-post-author').value,
 			category: document.getElementById('edit-post-category').value,
-			timestamp: parseInt(document.getElementById('edit-post-timestamp').value),
+			timestamp: parseInt(document.getElementById('edit-post-timestamp').value, 10),
 		}
 		
 		const {editPostAction} = this.props;

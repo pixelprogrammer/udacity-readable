@@ -24,10 +24,7 @@ class CommentEditModal extends Component {
 		const {editCommentAction} = this.props;
 		const closeModal = this.closeModal
 
-		console.log(formData);
-
 		updateComment(formData, function(comment) {
-			console.log("Completed comment update: ", comment)
 			editCommentAction(comment)
 			closeModal()
 		}, function(err) {

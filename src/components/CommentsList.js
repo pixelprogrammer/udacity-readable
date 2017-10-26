@@ -1,9 +1,7 @@
 import React, {Component} from 'react'
 import Comment from './Comment'
 import uuid from 'uuid/v4'
-import Modal from 'react-modal'
 import {sortingOptions} from '../utils/helpers'
-import CommentForm from './CommentForm'
 
 
 class CommentsList extends Component {
@@ -18,14 +16,12 @@ class CommentsList extends Component {
 
 	sortChangeHandler(self) {
 		return function(e) {
-			console.log(e.currentTarget.value);
 			const sort = e.currentTarget.value;
 			self.setState({sortby:sort})
 		}
 	}
 
 	openDeleteCommentModal = (comment) => {
-		console.log('open comment modal', comment)
 		this.setState({
 			deleteModalIsOpen: true,
 			commentToDelete: comment,
@@ -35,7 +31,6 @@ class CommentsList extends Component {
 	buttonDeleteHandler = (comment) => {
 		return function(e) {
 			this.openDeleteCommentModal(comment)
-			console.log(this.state.deleteModalIsOpen)
 		}.bind(this)
 	}
 	closeDeleteCommentModal() {
@@ -44,14 +39,12 @@ class CommentsList extends Component {
 		})
 	}
 	onCommentEditHandler = (comment) => (e) => {
-		console.log(comment)
 		this.setState({
 			editModalIsOpen: true,
 			commentToEdit: comment,
 		})
 	}
 	closeEditCommentModal = () => {
-		console.log('closing modal')
 
 		this.setState({
 			editModalIsOpen: false,
@@ -66,14 +59,11 @@ class CommentsList extends Component {
 	}
 
 	updateCommentHandler() {
-		const {onCommentUpdateHandler} = this.props
-		console.log('updating comment')
-
 		this.closeEditCommentModal()
 	}
 	render() {
 
-		const {comments, onCommentVoteHandler, onCommentDeleteHandler} = this.props
+		const {comments, onCommentVoteHandler} = this.props
 		// let sortedComments = sortingOptions[this.state.sortby].callback(comments)
 
 		return (

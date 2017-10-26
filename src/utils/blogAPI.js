@@ -73,7 +73,6 @@ export function editPost(data, onComplete, onError) {
 }
 
 export function deletePost(id, onComplete, onError) {
-	console.log('deleting post');
 	apiFetch(API_URL + '/posts/' + id, {
 		method: "DELETE"
 	})

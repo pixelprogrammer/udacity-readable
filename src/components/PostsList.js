@@ -2,11 +2,8 @@ import React, {Component} from 'react'
 import Post from './Post';
 import uuid from 'uuid/v4';
 import {sortingOptions} from '../utils/helpers'
-import Modal from 'react-modal'
 import {connect} from 'react-redux'
 import {deletePostAction, editPostAction} from '../actions/posts'
-import {deletePost, editPost} from '../utils/blogAPI'
-import PostForm from './PostForm'
 
 class PostsList extends Component {
 
@@ -20,16 +17,13 @@ class PostsList extends Component {
 
 	sortChangeHandler = (self) => {
 		return function(e) {
-			console.log(e.currentTarget.value);
 			const sort = e.currentTarget.value;
 			self.setState({sortby:sort})
 		}
 	}
-
 	
-
 	render() {
-		const {posts, onVoteHandler, onDelete, onEdit, category, categories, showDetails} = this.props
+		const {posts,category, showDetails} = this.props
 
 		const showPosts = typeof category === 'undefined'
 		const postList = posts.filter((post) => showPosts || post.category === category);

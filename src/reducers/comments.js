@@ -5,7 +5,6 @@ import {
 	ADD_COMMENTS,
 	UPVOTE_COMMENT,
 	DOWNVOTE_COMMENT,
-	ADDING_COMMENT,
 	EDITING_COMMENT,
 	DELETING_COMMENT,
 	IS_ADDING_COMMENT,
@@ -23,7 +22,6 @@ const initialState = {
 }
 
 function comments (state = initialState, action) {
-	let newState;
 	switch(action.type) {
 		case ADD_COMMENT:
 			let comments = state.comments[action.comment.parentId] ? state.comments[action.comment.parentId] : []

@@ -12,7 +12,7 @@ class CommentDeleteModal extends Component {
 	}
 
 	deleteComment = () => {
-		const {deletingComment, deletingCommentAction, deleteCommentAction} = this.props
+		const {deletingComment, deleteCommentAction} = this.props
 		const closeModal = this.closeModal
 
 		deleteComment(deletingComment.id, function(data) {

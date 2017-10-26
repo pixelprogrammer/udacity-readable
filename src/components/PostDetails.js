@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
-import {getPost, getComments, addComment} from '../utils/blogAPI'
+import {addComment} from '../utils/blogAPI'
 import CommentsList from './CommentsList'
 import CommentForm from './CommentForm'
-import uuid from 'uuid/v4'
 import Post from './Post'
 import {addCommentAction} from '../actions/comments'
 import {connect} from 'react-redux'
@@ -51,8 +50,6 @@ class PostDetails extends Component {
 	}
 
 	render() {
-		// const {post, loading, comments} = this.state
-		const {onDelete, onEdit, onVoteHandler, onCommentAddHandler, onCommentVoteHandler, onCommentDeleteHandler} = this.props
 		const {post, comments} = this.props
 
 		return (
@@ -74,7 +71,7 @@ class PostDetails extends Component {
 								actionPrefix="add"
 							/>
 						</div>
-						<CommentsList comments={comments} onCommentVoteHandler={onCommentVoteHandler} onCommentDeleteHandler={onCommentDeleteHandler} />
+						<CommentsList comments={comments} />
 
 					</div>
 				</div>

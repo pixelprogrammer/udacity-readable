@@ -8,12 +8,9 @@ import {addPostAction, editPostAction, deletePostAction, queryPostsAction, upvot
 import {queryCategories} from '../actions/categories';
 import {addCommentAction, addCommentsAction, upvoteCommentAction, downvoteCommentAction, deleteCommentAction} from '../actions/comments';
 import FaPlus from 'react-icons/lib/fa/plus';
-import Modal from 'react-modal'
-import uuid from 'uuid/v4'
-import {getPosts, getCategories, addPost, editPost, deletePost, upvotePost, downvotePost, addComment, updateComment, upvoteComment, downvoteComment, getComments, deleteComment} from '../utils/blogAPI'
+import {getPosts, getCategories, getComments} from '../utils/blogAPI'
 import PostDetails from './PostDetails'
 import CategoryList from './CategoryList'
-import PostForm from './PostForm'
 import PostEditModal from './modals/PostEditModal'
 import PostAddModal from './modals/PostAddModal'
 import PostDeleteModal from './modals/PostDeleteModal'
@@ -31,49 +28,6 @@ class App extends Component {
 		this.getAllPosts();
 		this.getAllCategories();
 	}
-
-	addPostButton = () => {
-		const {isAddingPostAction} = this.props
-
-		console.log('Clicked on the add post button')
-		isAddingPostAction(true)
-	}
-
-	editPost = () => {
-		// get all the input fields from the form
-		const formData = {
-			id: document.getElementById('edit-post-id').value,
-			title: document.getElementById('edit-post-title').value,
-			body: document.getElementById('edit-post-content').value,
-			author: document.getElementById('edit-post-author').value,
-			category: document.getElementById('edit-post-category').value,
-			timestamp: parseInt(document.getElementById('edit-post-timestamp').value),
-		}
-		
-
-		const {editPostAction} = this.props;
-		const closePostEditModal = this.closePostEditModal;
-
-		editPost(formData, function(data) {
-			editPostAction(data);
-			closePostEditModal();
-		}, function(err) {
-			console.error(err);
-		});
-	}
-	// onDeletePost = () => {
-	// 	const {deletePostAction} = this.props;
-	// 	const closeDeleteModal = this.closeDeleteModal;
-	// 	const postId = this.state.deletePostId;
-
-	// 	deletePost(postId, function(data) {
-	// 		closeDeleteModal();
-	// 		deletePostAction(postId);
-	// 	}, function(err) {
-	// 		console.error(err);
-	// 	});
-
-	// }
 
 	getAllPosts = () => {
 		const {queryPostsAction, addCommentsAction} = this.props;
@@ -117,93 +71,15 @@ class App extends Component {
 		getCategories(function(data) {
 			queryCategories(data);
 			self.setState({loadedCategories:true})
-			console.log('loaded categories: ', data)
 		}, function(err) {
 			console.error(err);
 		});
 	}
 
-	onVoteHandler = (voteType, id) => {
-
-		const {upvotePostAction, downvotePostAction} = this.props
-
-		return function() {
-
-			const onComplete = function(data) {
-				if( voteType === 'upvote' ) {
-					upvotePostAction(id);
-				} else {
-					downvotePostAction(id);
-				}
-			}
-
-			const onError = function(err) {
-				console.error(err);
-			}
-
-			if( voteType === "upvote" ) {
-				upvotePost(id, onComplete, onError);
-			} else {
-				downvotePost(id, onComplete, onError);
-			}
-		}
-	}
-
-	onCommentVoteHandler = (voteType, id) => {
-		const {upvoteCommentAction, downvoteCommentAction} = this.props
-
-		return function() {
-
-			const onComplete = function(data) {
-				console.log(data)
-				if( voteType === 'upvote' ) {
-					upvoteCommentAction(data);
-				} else {
-					downvoteCommentAction(data);
-				}
-			}
-
-			const onError = function(err) {
-				console.error(err);
-			}
-
-			if( voteType === "upvote" ) {
-				upvoteComment(id, onComplete, onError);
-			} else {
-				downvoteComment(id, onComplete, onError);
-			}
-		}
-	}
-
-	onCommentDeleteHandler = (comment) => (onComplete) => {
-		const {deleteCommentAction} = this.props
-		console.log(comment)
-		// return a function so we can pass in a callback 
-		return function(e) {
-			deleteComment(comment.id, function(data) {
-				deleteCommentAction(comment)
-				onComplete()
-			}, function(err) {
-				console.log(err)
-				onComplete()
-			})
-		}
-	}
-
 	render() {
-		let postToBeDeleted = ""
 		const {loadedPosts, loadedCategories} = this.state;
 		const {categories, comments, blogPosts} = this.props;
 		const {posts} = blogPosts
-
-		if( this.state.deletePostId ) {
-			const deleteP = posts.find((post) => {
-				return post.id === this.state.deletePostId
-			})
-
-			postToBeDeleted = deleteP.title
-		}
-
 
 		return (
 			<div className="App">
