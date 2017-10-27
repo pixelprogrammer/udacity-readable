@@ -8,11 +8,7 @@ import {deletePostAction, editPostAction} from '../actions/posts'
 class PostsList extends Component {
 
 	state = {
-		sortby: "best",
-		postToDelete: {},
-		deleteModalOpen: false,
-		postToEdit: {},
-		editModalOpen: false,
+		sortby: "best"
 	}
 
 	sortChangeHandler = (self) => {
@@ -40,9 +36,12 @@ class PostsList extends Component {
 				<div className="clearfix comment-sorting">
 					<form className="comment-sorting-form">
 						<label htmlFor="comment-sorter">Sort By: </label>
-						<select name="comment-sorter" id="comment-sorter" onChange={this.sortChangeHandler(this)}>
-							<option value="best">Best</option>
-							<option value="newest">Newest</option>
+						<select name="comment-sorter" id="comment-sorter" value={this.state.sortby} onChange={this.sortChangeHandler(this)}>
+							{Object.keys(sortingOptions).map((key) => {
+								return (
+									<option key={uuid()} value={key}>{sortingOptions[key].name}</option>
+								)
+							})}
 						</select>
 					</form>
 				</div>

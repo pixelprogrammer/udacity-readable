@@ -7,11 +7,6 @@ import {sortingOptions} from '../utils/helpers'
 class CommentsList extends Component {
 	state = {
 		sortby: "best",
-		deleteModalIsOpen: false,
-		commentToDelete: null,
-		deleting: false,
-		commentToEdit: {},
-		editModalIsOpen: false,
 	}
 
 	sortChangeHandler(self) {
@@ -65,7 +60,6 @@ class CommentsList extends Component {
 
 		const {comments, onCommentVoteHandler} = this.props
 		// let sortedComments = sortingOptions[this.state.sortby].callback(comments)
-
 		return (
 			<div className="comments-list-component">
 
@@ -74,9 +68,12 @@ class CommentsList extends Component {
 						<div className="clearfix comment-sorting">
 							<form className="comment-sorting-form">
 								<label htmlFor="comment-sorter">Sort By: </label>
-								<select name="comment-sorter" id="comment-sorter" onChange={this.sortChangeHandler(this)}>
-									<option value="best">Best</option>
-									<option value="newest">Newest</option>
+								<select name="comment-sorter" id="comment-sorter" value={this.state.sortby} onChange={this.sortChangeHandler(this)}>
+									{Object.keys(sortingOptions).map((key) => {
+										return (
+											<option key={uuid()} value={key}>{sortingOptions[key].name}</option>
+										)
+									})}
 								</select>
 							</form>
 						</div>

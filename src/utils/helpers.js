@@ -9,6 +9,10 @@ const sortingOptions = {
 	newest:{
 		name: "Newest",
 		callback: sortByNewest
+	},
+	oldest:{
+		name: 'Oldest',
+		callback: sortByOldest
 	}
 }
 
@@ -39,6 +43,18 @@ function sortByNewest(a,b) {
 	}
 
 	if( a.timestamp > b.timestamp ) {
+		return -1
+	}
+
+	return 0
+}
+
+function sortByOldest(a,b) {
+	if( a.timestamp > b.timestamp) {
+		return 1
+	}
+
+	if( a.timestamp < b.timestamp ) {
 		return -1
 	}
 
