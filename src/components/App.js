@@ -83,17 +83,21 @@ class App extends Component {
 	}
 
 	render() {
+		
 		const {loadedPosts, loadedCategories} = this.state;
 		const {categories, comments, blogPosts} = this.props;
 		const {posts} = blogPosts
+
 		return (
 			<div className="App">
 
 				<div className="header clearfix">
-					<div className="company-title"><img className="App-logo" src={logo} alt="logo"/>Readable</div>
-					<nav className="main-nav nav-right">
-						<li className="menu-item"><Link className="item" to="/">Home</Link></li>
-					</nav>
+					<div className="container">
+						<div className="company-title"><img className="App-logo" src={logo} alt="logo"/>Readable</div>
+						<nav className="main-nav nav-right">
+							<li className="menu-item"><Link className="item" to="/">Home</Link></li>
+						</nav>
+					</div>
 
 				</div>
 					<Route path="/" exact render={() => (

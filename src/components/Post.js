@@ -8,8 +8,14 @@ import {Link} from 'react-router-dom'
 import PostVoter from './PostVoter'
 import {isDeletingPostAction, deletingPostAction, isEditingPostAction, editingPostAction} from '../actions/posts'
 import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
 
 class Post extends Component {
+
+	static propTypes = {
+		post: PropTypes.object.isRequired,
+		showDetails: PropTypes.bool,
+	}
 
 	onEdit = (post) => () => {
 		const {isEditingPostAction, editingPostAction} = this.props

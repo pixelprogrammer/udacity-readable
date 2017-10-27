@@ -3,9 +3,14 @@ import VoteSystem from './VoteSystem'
 import {upvotePost, downvotePost} from '../utils/blogAPI'
 import {connect} from 'react-redux'
 import {upvotePostAction, downvotePostAction} from '../actions/posts'
+import PropTypes from 'prop-types'
 
 class PostVoter extends Component {
 	
+	static propTypes = {
+		post: PropTypes.object.isRequired,
+	}
+
 	onVoteHandler = (voteType, id) => {
 
 		const {upvotePostAction, downvotePostAction} = this.props

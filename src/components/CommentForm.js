@@ -1,9 +1,20 @@
 import React, {Component} from 'react'
+import PropTypes from 'prop-types'
 
 /**
  * CommentForm can be used to both add/edit a content
  */
 class CommentForm extends Component {
+
+	static propTypes = {
+		comment: PropTypes.object,
+		postId: PropTypes.string.isRequired,
+		actionPrefix: PropTypes.string.isRequired,
+		onSubmitHandler: PropTypes.oneOfType([
+			PropTypes.bool,
+			PropTypes.func
+		]),
+	}
 
 	render() {
 

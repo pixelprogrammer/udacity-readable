@@ -1,7 +1,15 @@
 import React, {Component} from 'react'
 import uuid from 'uuid/v4'
+import PropTypes from 'prop-types'
 
 class PostForm extends Component {
+
+	static propTypes = {
+		post: PropTypes.object,
+		onSubmit: PropTypes.func,
+		categories: PropTypes.array.isRequired,
+		hasSubmit: PropTypes.bool,
+	}
 
 	render() {
 

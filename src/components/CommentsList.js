@@ -2,9 +2,14 @@ import React, {Component} from 'react'
 import Comment from './Comment'
 import uuid from 'uuid/v4'
 import {sortingOptions} from '../utils/helpers'
-
+import PropTypes from 'prop-types'
 
 class CommentsList extends Component {
+	
+	static propTypes = {
+		comments: PropTypes.array.isRequired,
+	}
+
 	state = {
 		sortby: "best",
 	}
@@ -58,8 +63,8 @@ class CommentsList extends Component {
 	}
 	render() {
 
-		const {comments, onCommentVoteHandler} = this.props
-		// let sortedComments = sortingOptions[this.state.sortby].callback(comments)
+		const {comments} = this.props
+
 		return (
 			<div className="comments-list-component">
 
@@ -82,9 +87,6 @@ class CommentsList extends Component {
 								<Comment 
 									key={uuid()} 
 									comment={comment} 
-									onVoteHandler={onCommentVoteHandler} 
-									onDeleteHandler={this.buttonDeleteHandler} 
-									onEditHandler={this.onCommentEditHandler}
 								/>
 							))}
 						</div>

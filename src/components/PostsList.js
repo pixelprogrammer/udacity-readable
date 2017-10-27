@@ -4,8 +4,14 @@ import uuid from 'uuid/v4';
 import {sortingOptions} from '../utils/helpers'
 import {connect} from 'react-redux'
 import {deletePostAction, editPostAction} from '../actions/posts'
+import PropTypes from 'prop-types'
 
 class PostsList extends Component {
+	
+	static propTypes = {
+		posts: PropTypes.array.isRequired,
+		category: PropTypes.string
+	}
 
 	state = {
 		sortby: "best"
@@ -19,7 +25,7 @@ class PostsList extends Component {
 	}
 	
 	render() {
-		const {posts,category, showDetails} = this.props
+		const {posts,category} = this.props
 
 		const showPosts = typeof category === 'undefined'
 		const postList = posts.filter((post) => showPosts || post.category === category);
@@ -50,7 +56,7 @@ class PostsList extends Component {
 						<li key={uuid()} className="post-list-item">
 							<Post 
 								post={post} 
-								showDetails={showDetails}
+								showDetails={false}
 							/>
 						</li>
 					))}

@@ -24,6 +24,9 @@ body {
 	zoom: 1; /* For IE 6/7 (trigger hasLayout) */
 }
 
+.align-center {
+	text-align: center;
+}
 .error, .danger {
 	color: #da2424;
 }

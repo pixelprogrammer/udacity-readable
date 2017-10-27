@@ -5,8 +5,14 @@ import CommentForm from './CommentForm'
 import Post from './Post'
 import {addCommentAction} from '../actions/comments'
 import {connect} from 'react-redux'
+import PropTypes from 'prop-types'
 
 class PostDetails extends Component {
+
+	static propTypes = {
+		post: PropTypes.object.isRequired,
+		comments: PropTypes.array.isRequired,
+	}
 
 	onCommentAddHandler = (e) => {
 		e.preventDefault()
@@ -69,7 +75,7 @@ class PostDetails extends Component {
 					</div>
 				</div>
 			) : (
-				<div className="message">Post Not Found</div>
+				<p className="message align-center">Post Not Found</p>
 			)}
 				
 			</div>

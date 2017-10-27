@@ -2,9 +2,15 @@ import React, {Component} from 'react'
 import FaArrowDown from 'react-icons/lib/fa/arrow-down';
 import FaArrowUp from 'react-icons/lib/fa/arrow-up';
 import VoteScore from './VoteScore';
+import PropTypes from 'prop-types'
 
 class VoteSystem extends Component {
 
+	static propTypes = {
+		voteScore: PropTypes.number.isRequired,
+		downvoteHandler: PropTypes.func.isRequired,
+		upvoteHandler: PropTypes.func.isRequired,
+	}
 	
 	render() {
 

@@ -5,8 +5,14 @@ import FaTrashO from 'react-icons/lib/fa/trash-o'
 import CommentVoter from './CommentVoter'
 import {connect} from 'react-redux'
 import {isEditingCommentAction, editingCommentAction, isDeletingCommentAction, deletingCommentAction} from '../actions/comments'
+import PropTypes from 'prop-types'
 
 class Comment extends Component {
+	
+	static propTypes = {
+		comment: PropTypes.object.isRequired,
+	}
+
 	onEditHandler = (comment) => () => {
 		this.props.isEditingCommentAction(true)
 		this.props.editingCommentAction(comment)
